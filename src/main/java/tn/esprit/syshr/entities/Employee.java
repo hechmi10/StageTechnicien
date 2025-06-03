@@ -32,7 +32,7 @@ public class Employee {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private List<Absence> absences;
 
-    @OneToOne
+    @OneToOne(mappedBy="employee")
     private EvaluationEmployee evaluation;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy="employee")

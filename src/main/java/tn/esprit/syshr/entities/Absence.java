@@ -23,6 +23,7 @@ public class Absence {
     private Date dateFin;
     private int nbJours;
 
+    @JoinColumn(name="employee_id")
     @ManyToOne
     private Employee employee;
 }

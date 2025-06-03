@@ -20,7 +20,8 @@ public class EvaluationEmployee {
 
     private Date dateEvaluation;
 
-    @OneToOne(mappedBy = "evaluation")
+    @JoinColumn(name="employee_id")
+    @OneToOne
     private Employee employee;
 
 }

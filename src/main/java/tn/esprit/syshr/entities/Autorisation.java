@@ -23,6 +23,7 @@ public class Autorisation {
 
     private String duration;
 
+    @JoinColumn(name="employee_id")
     @ManyToOne
     private Employee employee;
 }
