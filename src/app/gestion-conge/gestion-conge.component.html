@@ -9,7 +9,8 @@
                 <th>Employé</th>
                 <th>Date Début</th>
                 <th>Date Fin</th>
-                <th>Type</th>
+                <th>Nombre de jours</th>
+                <th>Raison</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -19,6 +20,7 @@
                 <td>{{ conge.employee }}</td>
                 <td>{{ conge.dateDebut | date }}</td>
                 <td>{{ conge.dateFin | date }}</td>
+                <td>{{ conge.nbJours }}</td>
                 <td>{{ conge.raison }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="openUpdateModal(conge)">Modifier</button>
@@ -54,8 +56,12 @@
                         <input type="date" class="form-control" [(ngModel)]="newConge.dateFin" name="dateFin" required>
                     </div>
                     <div class="mb-3">
-                        <label>Type</label>
-                        <input type="text" class="form-control" [(ngModel)]="newConge.type" name="type" required>
+                        <label>Raison</label>
+                        <input type="text" class="form-control" [(ngModel)]="newConge.raison" name="raison" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Nombre de jours</label>
+                        <input type="number" class="form-control" [(ngModel)]="newConge.nbJours" value="{{newConge.dateFin - newConge.dateDebut}}" name="nbJours" required>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -15,12 +15,12 @@ export class GestionRetardComponent {
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newRetard: Retard = { dateDebut: new Date(), dateFin: new Date(), nbJours: 0, raison: '' };
+  newRetard: any = { dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
   selectedRetard: Retard | null = null;
   selectedRetardIndex: number | null = null;
 
   openCreateModal() {
-    this.newRetard = { dateDebut: new Date(), dateFin: new Date(), nbJours: 0, raison: '' };
+    this.newRetard = { dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
     this.showCreateModal = true;
   }
 
