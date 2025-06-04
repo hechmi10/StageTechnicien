@@ -17,7 +17,7 @@
         <tbody>
             <tr *ngFor="let retard of retards; let i = index">
                 <td>{{ i }}</td>
-                <td>{{retard.employee}}</td>
+                <td>{{retard.employee?.name}} {{retard.employee?.surname}}</td>
                 <td>{{ retard.dateDebut | date }}</td>
                 <td>{{ retard.dateFin | date }}</td>
                 <td>{{ retard.nbJours }}</td>
@@ -44,7 +44,7 @@
                     <div class="mb-3">
                         <label>Employé</label>
                         <select class="form-control" [(ngModel)]="newRetard.employee" name="employee" required>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp }}</option>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.name }} {{ emp.surname }}</option>
                         </select>
                     </div>
                     <div class="mb-3">

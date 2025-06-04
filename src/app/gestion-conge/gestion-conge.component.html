@@ -16,8 +16,8 @@
         </thead>
         <tbody>
             <tr *ngFor="let conge of conges; let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ conge.employee }}</td>
+                <td>{{ i }}</td>
+                <td>{{ conge.employee?.name }} {{ conge.employee?.surname }}</td>
                 <td>{{ conge.dateDebut | date }}</td>
                 <td>{{ conge.dateFin | date }}</td>
                 <td>{{ conge.nbJours }}</td>
@@ -44,7 +44,7 @@
                     <div class="mb-3">
                         <label>Employé</label>
                         <select class="form-control" [(ngModel)]="newConge.employe" name="employe" required>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp }}</option>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.name }} {{ emp.surname }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -85,7 +85,9 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Employé</label>
-                        <input type="text" class="form-control" [(ngModel)]="selectedConge.employe" name="employeUpdate" required>
+                        <select class="form-control" [(ngModel)]="selectedConge.employe" name="employeUpdate" required>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.name }} {{ emp.surname }}</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label>Date Début</label>

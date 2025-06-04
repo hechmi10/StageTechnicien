@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { PointageComponent } from './pointage/pointage.component';
@@ -40,7 +40,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient()
+    provideHttpClient(withFetch())
   ],
   bootstrap: [AppComponent]
 })

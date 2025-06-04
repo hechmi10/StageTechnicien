@@ -17,7 +17,7 @@
                 <td>{{ autorisation.id }}</td>
                 <td>{{ autorisation.date | date:'yyyy-MM-dd' }}</td>
                 <td>{{ autorisation.duration }}</td>
-                <td>{{ autorisation.employee?.name }}</td>
+                <td>{{ autorisation.employee?.name }} {{ autorisation.employee?.surname }}</td>
                 <td>
                     <button class="btn btn-primary btn-sm" (click)="openEditModal(autorisation)">Edit</button>
                     <button class="btn btn-danger btn-sm" (click)="openDeleteModal(autorisation)">Delete</button>
@@ -47,7 +47,7 @@
                         <div class="mb-3">
                             <label>Employee</label>
                             <select class="form-control" formControlName="employee" required>
-                                <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.name }}</option>
+                                <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.name }} {{ emp.surname }}</option>
                             </select>
                         </div>
                     </div>

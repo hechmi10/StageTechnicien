@@ -16,8 +16,8 @@
         </thead>
         <tbody>
             <tr *ngFor="let absence of absences; let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ absence.employee }}</td>
+                <td>{{ i }}</td>
+                <td>{{ absence.employee?.name }} {{ absence.employee?.surname }} </td>
                 <td>{{ absence.dateDebut | date }}</td>
                 <td>{{ absence.dateFin | date }}</td>
                 <td>{{ absence.nbJours }}</td>
@@ -45,7 +45,7 @@
                         <label>Employé</label>
                         <select class="form-control" [(ngModel)]="newAbsence.employee" name="employee" required>
                             <option value="" disabled selected>Sélectionnez un employé</option>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp }}</option>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.name }} {{ emp.surname }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -86,7 +86,10 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Employé</label>
-                        <input type="text" class="form-control" [(ngModel)]="selectedAbsence.employee" name="employeeUpdate" required>
+                        <select class="form-control" [(ngModel)]="selectedAbsence.employee" name="employeeUpdate" required>
+                            <option value="" disabled>Sélectionnez un employé</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.name }} {{ emp.surname }}</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label>Date début</label>

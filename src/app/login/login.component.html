@@ -1,6 +1,6 @@
 <div class="container">
     <h1>Login</h1>
-    <form (ngSubmit)="onLogin(login_form.value)">
+    <form (ngSubmit)="onLogin(login_form)">
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
             <input type="email" class="form-control" id="email" [formControl]="login_form.controls['email']" aria-describedby="emailHelp">
