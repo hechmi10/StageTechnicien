@@ -20,7 +20,7 @@ public class Conge {
     private Date dateDebut;
     private Date dateFin;
     private int nbJours;
-    public String raison;
+    private String raison;
 
     @JoinColumn(name="employee_id")
     @ManyToOne
