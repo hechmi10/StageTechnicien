@@ -27,7 +27,7 @@ public class CongeRestController {
     }
 
     @PostMapping("/save-conge")
-    public Conge saveConge(Conge conge) {
+    public Conge saveConge(@RequestBody Conge conge) {
         return congeService.saveConge(conge);
     }
 

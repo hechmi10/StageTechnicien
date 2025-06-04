@@ -20,6 +20,7 @@ public class Retard {
     private Date dateDebut;
     private Date dateFin;
     private int nbJours;
+    private String raison;
 
     @JoinColumn(name="employee_id")
     @ManyToOne
