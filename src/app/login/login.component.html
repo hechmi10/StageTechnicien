@@ -1,15 +1,15 @@
 <div class="container">
     <h1>Login</h1>
-    <form>
+    <form (ngSubmit)="onLogin(login_form.value)">
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+            <input type="email" class="form-control" id="email" [formControl]="login_form.controls['email']" aria-describedby="emailHelp">
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password">
+            <input type="password" class="form-control" id="password" [formControl]="login_form.controls['password']">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button routerLink="/gestion-absence" type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

@@ -1,3 +1,4 @@
+<div *ngIf="isAdmin">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">SysHR</a>
@@ -32,6 +33,8 @@
         </div>
     </div>
 </nav>
+</div>
+<div *ngIf="!isAdmin">
 <nav class="navbar navbar-expand-lg navbar-primary bg-primary">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">SysHR</a>
@@ -54,3 +57,4 @@
         </div>
     </div>
 </nav>
+</div>

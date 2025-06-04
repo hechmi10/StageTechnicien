@@ -1,1 +1,101 @@
-<p>gestion-evaluation works!</p>
+<!-- Evaluation Table -->
+<div class="container mt-4">
+    <h2>Evaluation List</h2>
+    <button class="btn btn-primary mb-2" (click)="openCreateModal()">Create Evaluation</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Employé</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let eval of evaluations; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ eval.employee }}</td>
+                <td>{{ eval.date | date }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" (click)="openUpdateModal(eval)">Update</button>
+                    <button class="btn btn-sm btn-danger" (click)="openDeleteModal(eval)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Create Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Evaluation</h5>
+                <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form #createForm="ngForm">
+                    <div class="mb-3">
+                        <label>Employé</label>
+                        <select class="form-control" [(ngModel)]="newEval.employee" name="employee" required>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date</label>
+                        <input type="date" class="form-control" [(ngModel)]="newEval.date" name="date" required>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
+                <button class="btn btn-primary" (click)="createEvaluation()" [disabled]=" !newEval.date">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Evaluation</h5>
+                <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form #updateForm="ngForm">
+                    <div class="mb-3">
+                        <label>Date</label>
+                        <input type="date" class="form-control" [(ngModel)]="selectedEval!.date" name="date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="closeUpdateModal()">Cancel</button>
+                <button class="btn btn-primary" (click)="updateEvaluation()" [disabled]=" !selectedEval?.date">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showDeleteModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Evaluation</h5>
+                <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this evaluation?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" (click)="deleteEvaluation()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

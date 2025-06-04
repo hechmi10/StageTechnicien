@@ -1,18 +1,33 @@
 <div class="container">
     <h1>Register</h1>
-    <form>
+    <form (ngSubmit)="onSubmit(register_form.value)">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" [formControl]="register_form.controls['firstName']" required>
+            <div class="form-text">Please enter your first name.</div>
+        </div>
+        <div class="mb-3">
+            <label for="surname" class="form-label">Surname</label>
+            <input type="text" class="form-control" id="surname" [formControl]="register_form.controls['lastName']" required>
+            <div class="form-text">Please enter your last name.</div>
+        </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+            <input type="email" class="form-control" id="email" [formControl]="register_form.controls['email']" required>
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password">
+            <input type="password" class="form-control" id="password" [formControl]="register_form.controls['password']" required>
         </div>
         <div class="mb-3">
-            <label for="confirmPassword" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="confirmPassword">
+            <label for="role" class="form-label">Role</label>
+            <select class="form-control" id="role" [formControl]="register_form.controls['role']" required>
+                <option value="" disabled>Select your role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
+            <div class="form-text">Please enter your role.</div>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

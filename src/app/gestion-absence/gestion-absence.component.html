@@ -9,6 +9,7 @@
                 <th>Employé</th>
                 <th>Date début</th>
                 <th>Date fin</th>
+                <th>Nombre de jours</th>
                 <th>Raison</th>
                 <th>Actions</th>
             </tr>
@@ -17,9 +18,10 @@
             <tr *ngFor="let absence of absences; let i = index">
                 <td>{{ i + 1 }}</td>
                 <td>{{ absence.employee }}</td>
-                <td>{{ absence.startDate | date }}</td>
-                <td>{{ absence.endDate | date }}</td>
-                <td>{{ absence.reason }}</td>
+                <td>{{ absence.dateDebut | date }}</td>
+                <td>{{ absence.dateFin | date }}</td>
+                <td>{{ absence.nbJours }}</td>
+                <td>{{ absence.raison }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="openUpdateModal(absence)">Modifier</button>
                     <button class="btn btn-sm btn-danger" (click)="openDeleteModal(absence)">Supprimer</button>
@@ -41,7 +43,10 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Employé</label>
-                        <input type="text" class="form-control" [(ngModel)]="newAbsence.employee" name="employee" required>
+                        <select class="form-control" [(ngModel)]="newAbsence.employee" name="employee" required>
+                            <option value="" disabled selected>Sélectionnez un employé</option>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp }}</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label>Date début</label>
@@ -52,8 +57,12 @@
                         <input type="date" class="form-control" [(ngModel)]="newAbsence.endDate" name="endDate" required>
                     </div>
                     <div class="mb-3">
+                        <label>Nombre de jours</label>
+                        <input type="number" class="form-control" [(ngModel)]="newAbsence.nbJours" name="nbJours" value="{{newAbsence.endDate - newAbsence.startDate}}" required readonly>
+                    </div>
+                    <div class="mb-3">
                         <label>Raison</label>
-                        <input type="text" class="form-control" [(ngModel)]="newAbsence.reason" name="reason" required>
+                        <input type="text" class="form-control" [(ngModel)]="newAbsence.raison" name="raison" required>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -1,1 +1,123 @@
-<p>gestion-conge works!</p>
+<!-- Conges Table -->
+<div class="container mt-4">
+    <h2>Gestion des Congés</h2>
+    <button class="btn btn-primary mb-3" (click)="openCreateModal()">Créer un Congé</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Employé</th>
+                <th>Date Début</th>
+                <th>Date Fin</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let conge of conges; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ conge.employee }}</td>
+                <td>{{ conge.dateDebut | date }}</td>
+                <td>{{ conge.dateFin | date }}</td>
+                <td>{{ conge.raison }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" (click)="openUpdateModal(conge)">Modifier</button>
+                    <button class="btn btn-sm btn-danger" (click)="openDeleteModal(conge)">Supprimer</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Création -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form (ngSubmit)="createConge()">
+                <div class="modal-header">
+                    <h5 class="modal-title">Créer un Congé</h5>
+                    <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Employé</label>
+                        <select class="form-control" [(ngModel)]="newConge.employe" name="employe" required>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Début</label>
+                        <input type="date" class="form-control" [(ngModel)]="newConge.dateDebut" name="dateDebut" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Fin</label>
+                        <input type="date" class="form-control" [(ngModel)]="newConge.dateFin" name="dateFin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Type</label>
+                        <input type="text" class="form-control" [(ngModel)]="newConge.type" name="type" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Créer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Modification -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form (ngSubmit)="updateConge()">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier le Congé</h5>
+                    <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Employé</label>
+                        <input type="text" class="form-control" [(ngModel)]="selectedConge.employe" name="employeUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Début</label>
+                        <input type="date" class="form-control" [(ngModel)]="selectedConge.dateDebut" name="dateDebutUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Fin</label>
+                        <input type="date" class="form-control" [(ngModel)]="selectedConge.dateFin" name="dateFinUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Type</label>
+                        <input type="text" class="form-control" [(ngModel)]="selectedConge.type" name="typeUpdate" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeUpdateModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Suppression -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showDeleteModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Supprimer le Congé</h5>
+                <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+            </div>
+            <div class="modal-body">
+                <p>Voulez-vous vraiment supprimer ce congé de <strong>{{ selectedConge?.employe }}</strong> ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Annuler</button>
+                <button type="button" class="btn btn-danger" (click)="deleteConge()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>

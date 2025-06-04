@@ -1,1 +1,122 @@
-<p>gestion-retard works!</p>
+<!-- Table of Retards -->
+<div class="container mt-4">
+    <h2>Gestion des Retards</h2>
+    <button class="btn btn-primary mb-2" (click)="openCreateModal()">Ajouter Retard</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Employé</th>
+                <th>Date Debut</th>
+                <th>Date Fin</th>
+                <th>Nombre de Jours</th>
+                <th>Raison</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let retard of retards; let i = index">
+                <td>{{ i }}</td>
+                <td>{{retard.employee}}</td>
+                <td>{{ retard.dateDebut | date }}</td>
+                <td>{{ retard.dateFin | date }}</td>
+                <td>{{ retard.nbJours }}</td>
+                <td>{{ retard.raison }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" (click)="openUpdateModal(retard)">Modifier</button>
+                    <button class="btn btn-sm btn-danger" (click)="openDeleteModal(retard)">Supprimer</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Create Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter Retard</h5>
+                <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form #createForm="ngForm">
+                    <div class="mb-3">
+                        <label>Employé</label>
+                        <select class="form-control" [(ngModel)]="newRetard.employee" name="employee" required>
+                            <option *ngFor="let emp of employees" [value]="emp">{{ emp }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Debut</label>
+                        <input type="date" class="form-control" [(ngModel)]="newRetard.dateDebut" name="dateDebut" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Fin</label>
+                        <input type="date" class="form-control" [(ngModel)]="newRetard.dateFin" name="dateFin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Raison</label>
+                        <input type="text" class="form-control" [(ngModel)]="newRetard.raison" name="raison" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
+                <button class="btn btn-primary" (click)="createRetard()" [disabled]="!newRetard.dateDebut || !newRetard.dateFin || !newRetard.raison">Créer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier Retard</h5>
+                <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form #updateForm="ngForm">
+                    <div class="mb-3">
+                        <label>Date Debut</label>
+                        <input type="date" class="form-control" [(ngModel)]="selectedRetard!.dateDebut" name="dateDebut" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Fin</label>
+                        <input type="date" class="form-control" [(ngModel)]="selectedRetard!.dateFin" name="dateFin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Raison</label>
+                        <input type="text" class="form-control" [(ngModel)]="selectedRetard!.raison" name="raison" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="closeUpdateModal()">Annuler</button>
+                <button class="btn btn-primary" (click)="updateRetard()" [disabled]="!selectedRetard?.dateDebut || !selectedRetard?.dateFin || !selectedRetard?.raison">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showDeleteModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Supprimer Retard</h5>
+                <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+            </div>
+            <div class="modal-body">
+                <p>Voulez-vous vraiment supprimer ce retard ?</p>
+                <p><strong>{{ selectedRetard?.dateDebut | date }}</strong> - {{ selectedRetard?.dateFin | date }}</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="closeDeleteModal()">Annuler</button>
+                <button class="btn btn-danger" (click)="deleteRetard()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>

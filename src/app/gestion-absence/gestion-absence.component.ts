@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Absence } from '../models/absence';
+import { Employee } from '../models/employee';
 
 @Component({
   selector: 'app-gestion-absence',
@@ -6,18 +8,19 @@ import { Component } from '@angular/core';
   styleUrl: './gestion-absence.component.css'
 })
 export class GestionAbsenceComponent {
-  absences: any[] = [];
+  employees: Employee[] = [];
+  absences: Absence[] = [];
   showCreateModal = false;
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newAbsence: any = { employee: '', startDate: '', endDate: '', reason: '' };
+  newAbsence: any = { employee: null, startDate: '', endDate: '', raison: '' };
   selectedAbsence: any = null;
   selectedAbsenceIndex: number | null = null;
 
   openCreateModal() {
     this.showCreateModal = true;
-    this.newAbsence = { employee: '', startDate: '', endDate: '', reason: '' };
+    this.newAbsence = { employee: null, startDate: '', endDate: '', raison: '' };
   }
 
   closeCreateModal() {
