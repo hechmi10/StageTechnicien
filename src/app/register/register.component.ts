@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Role } from '../models/role';
+import { RegisterService } from '../services/register/register.service';
 
 @Component({
   selector: 'app-register',
@@ -12,7 +13,7 @@ export class RegisterComponent {
   // This component is used for user registration
   // It can be extended with form controls and validation logic as needed
 
-  constructor(private router:Router) { }
+  constructor(private router:Router,private _service:RegisterService) { }
 
   register_form=new FormGroup({
     firstName: new FormControl('',[Validators.required, Validators.minLength(2)]),
@@ -23,19 +24,33 @@ export class RegisterComponent {
   });
 
   // Method to handle form submission
-  onSubmit(form: any) {
+  onSubmit(form: FormGroup) {
     console.log('Form submitted:', form);
-    if (form.role === Role.ADMIN) {
-      console.log('Admin registration successful');
+    if (form.value.role === Role.ADMIN) {
+      this._service.signUpAdmin(form.value).subscribe({
+        next: (data) => {
+          console.log('Admin registered successfully:', data);
+        },
+        error: (error) => {
+          console.error('Error registering admin:', error);
+        }
+      });
       this.router.navigate(['/gestion-absence']);
     }else {
-      console.log('User registration successful');
+      this._service.signUpEmployee(form.value).subscribe({
+        next: (data) => {
+          console.log('Employee registered successfully:', data);
+        },
+        error: (error) => {
+          console.error('Error registering employee:', error);
+        }
+      });
       this.router.navigate(['/pointage']);
     }
     // Add logic to handle registration, e.g., call a service to save user data
   }
   // Method to reset the form
-  resetForm(form: any) {
+  resetForm(form: FormGroup) {
     form.reset();
     console.log('Form reset');
   }

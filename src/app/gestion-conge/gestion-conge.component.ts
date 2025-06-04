@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Conge } from '../models/conge';
 import { Employee } from '../models/employee';
+import { GestionCongeService } from '../services/conge/gestion-conge.service';
+import { EmployeeService } from '../services/employee/employee.service';
 
 @Component({
   selector: 'app-gestion-conge',
   templateUrl: './gestion-conge.component.html',
   styleUrl: './gestion-conge.component.css'
 })
-export class GestionCongeComponent {
+export class GestionCongeComponent implements OnInit {
+  constructor(private _conge_service: GestionCongeService, private _employee_service: EmployeeService) { }
   conges: Conge[] = [
   ];
 
@@ -17,6 +20,21 @@ export class GestionCongeComponent {
 
   newConge: any = { employe: '', dateDebut: '', dateFin: '', type: '' };
   selectedConge: any = null;
+
+  ngOnInit() {
+    this.loadConges();
+  }
+
+  loadConges() {
+    this._conge_service.getConge().subscribe({
+      next: (data) => {
+        this.conges = data;
+      },
+      error: (error) => {
+        console.error('Error loading conges:', error);
+      }
+    });
+  }
   employees: Employee[] = [];
 
   openCreateModal() {
@@ -29,7 +47,14 @@ export class GestionCongeComponent {
   }
 
   createConge() {
-    this.conges.push({ ...this.newConge });
+    this._conge_service.createConge(this.newConge).subscribe({
+      next: (data) => {
+        this.conges.push(data);
+      },
+      error: (error) => {
+        console.error('Error creating conge:', error);
+      }
+    });
     this.closeCreateModal();
   }
 
@@ -51,7 +76,14 @@ export class GestionCongeComponent {
       c.raison === this.selectedConge.raison
     );
     if (index !== -1) {
-      this.conges[index] = { ...this.selectedConge };
+      this._conge_service.updateConge(index,this.selectedConge).subscribe({
+        next: (data) => {
+          this.conges[index] = { ...data };
+        },
+        error: (error) => {
+          console.error('Error updating conge:', error);
+        }
+      });
     }
     this.closeUpdateModal();
   }
@@ -67,7 +99,14 @@ export class GestionCongeComponent {
   }
 
   deleteConge() {
-    this.conges = this.conges.filter(c => c !== this.selectedConge);
+    this._conge_service.deleteConge(this.selectedConge.id).subscribe({
+      next: () => {
+        this.conges = this.conges.filter(c => c !== this.selectedConge);
+      },
+      error: (error) => {
+        console.error('Error deleting conge:', error);
+      }
+    });
     this.closeDeleteModal();
   }
 }

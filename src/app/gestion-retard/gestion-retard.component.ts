@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Retard } from '../models/retard';
 import { Employee } from '../models/employee';
+import { GestionRetardService } from '../services/retard/gestion-retard.service';
 
 @Component({
   selector: 'app-gestion-retard',
   templateUrl: './gestion-retard.component.html',
   styleUrl: './gestion-retard.component.css'
 })
-export class GestionRetardComponent {
+export class GestionRetardComponent implements OnInit {
+  constructor(private _service: GestionRetardService) { }
   retards: Retard[] = [];
   employees: Employee[] = [];
 
@@ -17,6 +19,21 @@ export class GestionRetardComponent {
 
   newRetard: any = { dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
   selectedRetard: Retard | null = null;
+
+  ngOnInit() {
+    this.getRetards();
+  }
+
+  getRetards() {
+    this._service.getRetard().subscribe({
+      next: (data) => {
+        this.retards = data;
+      },
+      error: (error) => {
+        console.error('Error fetching retards:', error);
+      }
+    });
+  }
   selectedRetardIndex: number | null = null;
 
   openCreateModal() {
@@ -29,7 +46,15 @@ export class GestionRetardComponent {
   }
 
   createRetard() {
-    this.retards.push({ ...this.newRetard });
+    this._service.createRetard(this.newRetard).subscribe({
+      next: (data) => {
+        console.log('Retard created successfully:', data);
+        this.retards.push({ ...this.newRetard });
+      },
+      error: (error) => {
+        console.error('Error creating retard:', error);
+      }
+    });
     this.closeCreateModal();
   }
 
@@ -51,7 +76,15 @@ export class GestionRetardComponent {
       this.selectedRetardIndex !== null &&
       this.selectedRetardIndex > -1
     ) {
-      this.retards[this.selectedRetardIndex] = { ...this.selectedRetard };
+      this._service.updateRetard(this.selectedRetardIndex, this.selectedRetard).subscribe({
+        next: (data) => {
+          console.log('Retard updated successfully:', data);
+          this.retards[this.selectedRetardIndex!] = { ...this.selectedRetard };
+        },
+        error: (error) => {
+          console.error('Error updating retard:', error);
+        }
+      });
     }
     this.closeUpdateModal();
   }
@@ -73,7 +106,15 @@ export class GestionRetardComponent {
       this.selectedRetardIndex !== null &&
       this.selectedRetardIndex > -1
     ) {
-      this.retards.splice(this.selectedRetardIndex, 1);
+      this._service.deleteRetard(this.selectedRetardIndex).subscribe({
+        next: (data) => {
+          console.log('Retard deleted successfully:', data);
+          this.retards.splice(this.selectedRetardIndex!, 1);
+        },
+        error: (error) => {
+          console.error('Error deleting retard:', error);
+        }
+      });
     }
     this.closeDeleteModal();
   }

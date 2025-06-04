@@ -1,13 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Evaluation } from '../models/evaluation';
 import { Employee } from '../models/employee';
+import { GestionEvaluationService } from '../services/evaluation/gestion-evaluation.service';
+import { EmployeeService } from '../services/employee/employee.service';
 
 @Component({
   selector: 'app-gestion-evaluation',
   templateUrl: './gestion-evaluation.component.html',
   styleUrl: './gestion-evaluation.component.css'
 })
-export class GestionEvaluationComponent {
+export class GestionEvaluationComponent implements OnInit {
+  constructor(private _eval_service: GestionEvaluationService,private _employee_service: EmployeeService) { }
+  ngOnInit(): void {
+    this._eval_service.getEvaluation().subscribe((data: Evaluation[]) => {
+      this.evaluations = data;
+    });
+
+    this._employee_service.getEmployees().subscribe((data: Employee[]) => {
+      this.employees = data;
+    });
+  }
   evaluations: Evaluation[] = [
   ];
 

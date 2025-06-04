@@ -1,14 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Autorisation } from '../models/autorisation';
 import { Employee } from '../models/employee';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { GestionAutorisationService } from '../services/autorisation/gestion-autorisation.service';
+import { EmployeeService } from '../services/employee/employee.service';
 
 @Component({
   selector: 'app-gestion-autorisation',
   templateUrl: './gestion-autorisation.component.html',
   styleUrl: './gestion-autorisation.component.css'
 })
-export class GestionAutorisationComponent {
+export class GestionAutorisationComponent implements OnInit {
+  
+  constructor(private _autorisation_service: GestionAutorisationService, private _employee_service: EmployeeService) { }
   autorisations: Autorisation[] = [];
 
   employees:Employee[] = [];
@@ -20,9 +24,19 @@ export class GestionAutorisationComponent {
   newAutorisation = { dateAutorisation: '', duration: '', employee: undefined };
   selectedAutorisation: any = null;
   autorisationToDelete: any = null;
+  
+  ngOnInit(): void {
+    this._autorisation_service.getAutorisation().subscribe((data: Autorisation[]) => {
+      this.autorisations = data;
+    });
+
+    this._employee_service.getEmployees().subscribe((data: Employee[]) => {
+      this.employees = data;
+    });
+  }
 
   form=new FormGroup({
-    dateAutorisation: new FormControl('',[Validators.required]),
+    dateAutorisation: new FormControl(new Date(),[Validators.required]),
     duration: new FormControl('',[Validators.required]),
     employee: new FormControl('',[Validators.required])
   });
@@ -38,13 +52,24 @@ export class GestionAutorisationComponent {
   }
 
   createAutorisation() {
-    const ids = this.autorisations.map(a => a.id).filter((id): id is number => id !== undefined);
-    const newId = ids.length ? Math.max(...ids) + 1 : 1;
-    this.autorisations.push({
-      id: newId,
-      date: new Date(this.newAutorisation.dateAutorisation),
-      duration: this.newAutorisation.duration,
-      employee: this.newAutorisation.employee
+    if (this.form.invalid) {
+      console.error('Form is invalid');
+      return;
+    }
+    const formValue = this.form.value;
+    const employeeObj = this.employees.find(e => e.id === formValue.employee);
+    const autorisation: Autorisation = {
+      date: formValue.dateAutorisation!,
+      duration: formValue.duration!,
+      employee: employeeObj
+    };
+    this._autorisation_service.createAutorisation(autorisation).subscribe({
+      next: (data) => {
+        this.autorisations.push(data);
+      },
+      error: (error) => {
+        console.error('Error creating autorisation:', error);
+      }
     });
     this.closeCreateModal();
   }
@@ -61,10 +86,14 @@ export class GestionAutorisationComponent {
   updateAutorisation() {
     const idx = this.autorisations.findIndex(a => a.id === this.selectedAutorisation.id);
     if (idx > -1) {
-      this.autorisations[idx] = {
-        ...this.selectedAutorisation,
-        dateAutorisation: new Date(this.selectedAutorisation.dateAutorisation)
-      };
+      this._autorisation_service.updateAutorisation(idx,this.selectedAutorisation).subscribe({
+        next: (data) => {
+          this.autorisations[idx] = data;
+        },
+        error: (error) => {
+          console.error('Error updating autorisation:', error);
+        }
+      });
     }
     this.closeEditModal();
   }
@@ -79,7 +108,14 @@ export class GestionAutorisationComponent {
   }
 
   deleteAutorisation() {
-    this.autorisations = this.autorisations.filter(a => a.id !== this.autorisationToDelete.id);
+    this._autorisation_service.deleteAutorisation(this.autorisationToDelete.id).subscribe({
+      next: () => {
+        this.autorisations = this.autorisations.filter(a => a.id !== this.autorisationToDelete.id);
+      },
+      error: (error) => {
+        console.error('Error deleting autorisation:', error);
+      }
+    });
     this.closeDeleteModal();
   }
 }
