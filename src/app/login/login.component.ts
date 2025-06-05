@@ -16,19 +16,32 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
   onLogin(form: FormGroup) {
-    if (form.valid) {
-      const email = form.value.email;
-      const password = form.value.password;
-      console.log('Login successful for:', email);
-      this._service.login(email).subscribe({
-        next: (data) => {
-          console.log('User logged in successfully:', data);
+  if (form.valid) {
+    const { email, password } = form.value;
+    
+    // First try employee login
+    this._service.login({ email, password }).subscribe({
+      next: (employeeData) => {
+        if (employeeData.role === 'ADMIN') {
+          // If employee is actually admin, navigate to admin dashboard
+          this.router.navigate(['/gestion-absence']);
+        } else {
           this.router.navigate(['/pointage']);
-        },
-        error: (error) => {
-          console.error('Error logging in user:', error);
         }
-      });
-    }
+      },
+      error: (employeeError) => {
+        // If employee login fails, try admin login
+        this._service.loginAdmin({ email, password }).subscribe({
+          next: (adminData) => {
+            this.router.navigate(['/gestion-absence']);
+          },
+          error: (adminError) => {
+            console.error('Both login attempts failed');
+            // Show error message to user
+          }
+        });
+      }
+    });
   }
+}
 }

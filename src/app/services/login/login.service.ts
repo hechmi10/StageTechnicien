@@ -11,12 +11,12 @@ export class LoginService {
 
   constructor(private http: HttpClient) { }
 
-  login(id:number) {
-    return this.http.get<Employee>(this.apiUrl + "/authenticate/" + id);
+  login(req:{ email: string, password: string }) {
+    return this.http.post<Employee>(this.apiUrl + "/authenticate",req);
   }
 
-  loginAdmin(id:number) {
-    return this.http.get<Admin>(this.apiUrl + "/authenticate/" + id);
+  loginAdmin(req:{ email: string, password: string }) {
+    return this.http.post<Admin>(this.apiUrl + "/authenticate",req);
   }
 
 }
