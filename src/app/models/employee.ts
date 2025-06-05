@@ -2,8 +2,6 @@ import { Role } from "./role";
 
 export class Employee{
     id?:number;
-    name?:string;
-    surname?:string;
     email?:string;
     password?:string;
     role?:Role;

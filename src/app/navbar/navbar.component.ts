@@ -8,13 +8,14 @@ import { Role } from '../models/role';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  employee: Employee = new Employee();
-  isAdmin: boolean = false;
+  // Assuming employee is injected or set from a service
+  employee: Employee | undefined;
+  isAdmin!: boolean;
 
   constructor() {
-    if (this.employee.role !== undefined && this.employee.role === Role.ADMIN) {
+    if (this.employee?.role === Role.ADMIN) {
       this.isAdmin = true;
-    } else if (this.employee.role !== undefined && this.employee.role === Role.EMPLOYEE) {
+    } else if (this.employee?.role === Role.EMPLOYEE) {
       this.isAdmin = false;
     }
   }

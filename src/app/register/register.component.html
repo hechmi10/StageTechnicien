@@ -2,16 +2,6 @@
     <h1>Register</h1>
     <form (ngSubmit)="onSubmit(register_form)">
         <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" [formControl]="register_form.controls['firstName']" required>
-            <div class="form-text">Please enter your first name.</div>
-        </div>
-        <div class="mb-3">
-            <label for="surname" class="form-label">Surname</label>
-            <input type="text" class="form-control" id="surname" [formControl]="register_form.controls['lastName']" required>
-            <div class="form-text">Please enter your last name.</div>
-        </div>
-        <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
             <input type="email" class="form-control" id="email" [formControl]="register_form.controls['email']" required>
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
