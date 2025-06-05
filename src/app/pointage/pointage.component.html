@@ -1,1 +1,14 @@
-<p>pointage works!</p>
+<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 60vh;">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Pointage</h2>
+        <p class="text-center fs-5 mb-3">
+            <span class="fw-semibold">Nombre de pointages restants :</span>
+            <span class="badge bg-info text-dark ms-2">{{ nombrePointagesRestants }}</span>
+        </p>
+        <div class="d-flex justify-content-center">
+            <button type="button" (click)="pointage()" class="btn btn-primary px-4 py-2">
+                Pointer
+            </button>
+        </div>
+    </div>
+</div>

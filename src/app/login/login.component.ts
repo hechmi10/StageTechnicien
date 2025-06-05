@@ -20,13 +20,13 @@ export class LoginComponent {
       const email = form.value.email;
       const password = form.value.password;
       console.log('Login successful for:', email);
-      this._service.loginEmployee(email).subscribe({
+      this._service.login(email).subscribe({
         next: (data) => {
-          console.log('Employee logged in successfully:', data);
+          console.log('User logged in successfully:', data);
           this.router.navigate(['/pointage']);
         },
         error: (error) => {
-          console.error('Error logging in employee:', error);
+          console.error('Error logging in user:', error);
         }
       });
     }

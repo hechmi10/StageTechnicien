@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrl: './pointage.component.css'
 })
 export class PointageComponent {
-
+  nombrePointagesRestants: number = 2;
+  pointage() {
+    if (this.nombrePointagesRestants > 0) {
+      this.nombrePointagesRestants--;
+      console.log('Pointage effectué. Points restants:', this.nombrePointagesRestants);
+    } else {
+      console.log('Aucun pointage restant.');
+    }
+  }
 }

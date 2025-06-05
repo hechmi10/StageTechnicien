@@ -27,7 +27,7 @@ export class RegisterComponent {
   onSubmit(form: FormGroup) {
     console.log('Form submitted:', form);
     if (form.value.role === Role.ADMIN) {
-      this._service.signUpAdmin(form.value).subscribe({
+      this._service.signUp(form.value).subscribe({
         next: (data) => {
           console.log('Admin registered successfully:', data);
         },
@@ -37,7 +37,7 @@ export class RegisterComponent {
       });
       this.router.navigate(['/gestion-absence']);
     }else {
-      this._service.signUpEmployee(form.value).subscribe({
+      this._service.signUp(form.value).subscribe({
         next: (data) => {
           console.log('Employee registered successfully:', data);
         },

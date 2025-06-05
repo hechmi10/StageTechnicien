@@ -7,17 +7,16 @@ import { Admin } from '../../models/admin';
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrlEmp: string = "http://localhost:8080/api/employee";
-  private apiUrlAdmin: string = "http://localhost:8080/api/admin";
+  private apiUrl: string = "http://localhost:8080/api/auth";
 
   constructor(private http: HttpClient) { }
 
-  loginEmployee(id:number) {
-    return this.http.get<Employee>(this.apiUrlEmp + "/get-employee-by-id/" + id);
+  login(id:number) {
+    return this.http.get<Employee>(this.apiUrl + "/authenticate/" + id);
   }
 
   loginAdmin(id:number) {
-    return this.http.get<Admin>(this.apiUrlAdmin + "/get-admin-by-id/" + id);
+    return this.http.get<Admin>(this.apiUrl + "/authenticate/" + id);
   }
 
 }
