@@ -22,7 +22,7 @@ export class LoginComponent {
     // First try employee login
     this._service.login({ email, password }).subscribe({
       next: (employeeData) => {
-        if (employeeData.role === 'ADMIN') {
+        if (employeeData.role === Role.ADMIN) {
           // If employee is actually admin, navigate to admin dashboard
           this.router.navigate(['/gestion-absence']);
         } else {
