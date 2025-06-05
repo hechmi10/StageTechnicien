@@ -5,8 +5,9 @@ import org.springframework.stereotype.Repository;
 import tn.esprit.syshr.entities.Employee;
 
 import java.lang.ScopedValue;
+import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    <T> ScopedValue<T> findByEmail(String username);
+    Optional<Employee> findByEmail(String username);
 }
