@@ -12,9 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import tn.esprit.syshr.entities.Admin;
 import tn.esprit.syshr.entities.Role;
 import tn.esprit.syshr.config.JwtService;
 import tn.esprit.syshr.entities.Employee;
+import tn.esprit.syshr.repositories.AdminRepository;
 import tn.esprit.syshr.repositories.EmployeeRepository;
 
 @Service
@@ -23,6 +25,7 @@ public class AuthenticationService {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
     private final EmployeeRepository repository;
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -35,32 +38,46 @@ public class AuthenticationService {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
             }
 
-            var user = Employee.builder()
-                    .name(request.getName())
-                    .surname(request.getSurname())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.EMPLOYEE)
-                    .build();
+            // Create the appropriate user type based on role
+            Employee user;
+            if (Role.ADMIN.equals(request.getRole())) {
+                user = new Admin();  // Explicit Admin creation
+                user.setName(request.getName());
+                user.setSurname(request.getSurname());
+                user.setEmail(request.getEmail());
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+                user.setRole(request.getRole());
+                        // Add any Admin-specific fields here
+            } else {
+                user = Employee.builder()
+                        .name(request.getName())
+                        .surname(request.getSurname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .build();
+            }
 
             var savedUser = repository.save(user);
-            logger.info("User saved: ID={}, Email={}, Password Hash={}",
-                    savedUser.getId(), savedUser.getEmail(), savedUser.getPassword());
+            logger.info("User saved: ID={}, Email={}, Type={}, Password Hash={}",
+                    savedUser.getId(), savedUser.getEmail(),
+                    savedUser.getClass().getSimpleName(), savedUser.getPassword());
 
             var jwtToken = jwtService.generateToken(user);
-            logger.info("JWT generated for email: {}", request.getEmail());
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
 
         } catch (ResponseStatusException e) {
-            throw e; // Re-throw specific exceptions with status codes
+            throw e;
         } catch (Exception e) {
             logger.error("Registration failed for email: {}", request.getEmail(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Failed to register user: " + e.getMessage(), e);
         }
     }
+
+
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         logger.info("Authenticating user: {}", request.getEmail());

@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Employee {
