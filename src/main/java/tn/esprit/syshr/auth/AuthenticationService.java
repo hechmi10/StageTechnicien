@@ -39,29 +39,26 @@ public class AuthenticationService {
             }
 
             // Create the appropriate user type based on role
-            Employee user;
-            if (Role.ADMIN.equals(request.getRole())) {
-                user = new Admin();  // Explicit Admin creation
-                user.setName(request.getName());
-                user.setSurname(request.getSurname());
-                user.setEmail(request.getEmail());
-                user.setPassword(passwordEncoder.encode(request.getPassword()));
-                user.setRole(request.getRole());
-                        // Add any Admin-specific fields here
-            } else {
-                user = Employee.builder()
-                        .name(request.getName())
-                        .surname(request.getSurname())
-                        .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .role(request.getRole())
-                        .build();
-            }
+            var user = Role.ADMIN.equals(request.getRole())
+                    ? Admin.builder()
+                    .name(request.getName())
+                    .surname(request.getSurname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(request.getRole())
+                    .build()
+                    : Employee.builder()
+                    .name(request.getName())
+                    .surname(request.getSurname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(request.getRole())
+                    .build();
 
             var savedUser = repository.save(user);
-            logger.info("User saved: ID={}, Email={}, Type={}, Password Hash={}",
-                    savedUser.getId(), savedUser.getEmail(),
-                    savedUser.getClass().getSimpleName(), savedUser.getPassword());
+            logger.info("User saved:  Email={}, Password Hash={}",
+                    savedUser.getEmail(),
+                     savedUser.getPassword());
 
             var jwtToken = jwtService.generateToken(user);
             return AuthenticationResponse.builder()
@@ -91,8 +88,8 @@ public class AuthenticationService {
             logger.info("AuthenticationManager succeeded for email: {}", request.getEmail());
             var user = repository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new RuntimeException("User not found: " + request.getEmail()));
-            logger.info("User retrieved: ID={}, Email={}, Password Hash={}",
-                    user.getId(), user.getEmail(), user.getPassword());
+            logger.info("User retrieved: Email={}, Password Hash={}",
+                     user.getUsername(), user.getPassword());
             var jwtToken = jwtService.generateToken(user);
             logger.info("JWT generated for email: {}", request.getEmail());
             return AuthenticationResponse.builder()
