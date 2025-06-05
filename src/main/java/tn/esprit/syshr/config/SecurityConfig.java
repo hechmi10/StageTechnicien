@@ -33,9 +33,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/absence/**").permitAll()
-                        .requestMatchers("/employee/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/employee/**").permitAll()
                         .requestMatchers("/retard/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/conge/**").permitAll()
                         .requestMatchers("/autorisation/**").permitAll()
                         .requestMatchers("/evaluation/**").permitAll()
