@@ -33,7 +33,7 @@ public class AdminServiceImpl implements IAdminService {
         Admin admin1 = adminRepository.findById(id).orElse(null);
         assert admin1 != null;
         admin1.setEmail(admin.getEmail());
-        admin1.setPassword(admin.getName());
+        admin1.setPassword(admin.getPassword());
         return adminRepository.save(admin1);
     }
 
