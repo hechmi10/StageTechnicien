@@ -57,7 +57,7 @@
                     </div>
                     <div class="mb-3">
                         <label>Nombre de Jours</label>
-                        <input type="number" class="form-control" [(ngModel)]="newRetard.nbJours" value="{{ newRetard.dateFin - newRetard.dateDebut }}" name="nbJours" required readonly>
+                        <input type="number" class="form-control" [(ngModel)]="newRetard.nbJours" [value]="dateDiff(newRetard.dateDebut, newRetard.dateFin)" name="nbJours" required readonly>
                     </div>
                     <div class="mb-3">
                         <label>Raison</label>

@@ -58,7 +58,7 @@
                     </div>
                     <div class="mb-3">
                         <label>Nombre de jours</label>
-                        <input type="number" class="form-control" [(ngModel)]="newAbsence.nbJours" name="nbJours" value="{{newAbsence.endDate - newAbsence.startDate}}" required readonly>
+                        <input type="number" class="form-control" [(ngModel)]="newAbsence.nbJours" name="nbJours" [value]="dateDiff(newAbsence.startDate, newAbsence.endDate)" required readonly>
                     </div>
                     <div class="mb-3">
                         <label>Raison</label>

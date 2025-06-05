@@ -118,4 +118,12 @@ export class GestionRetardComponent implements OnInit {
     }
     this.closeDeleteModal();
   }
+  dateDiff(dateDebut: string | Date, dateFin: string | Date): number {
+    if (!dateDebut || !dateFin) return 0;
+    const debut = new Date(dateDebut);
+    const fin = new Date(dateFin);
+    const diffTime = fin.getTime() - debut.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays > 0 ? diffDays : 0;
+  }
 }

@@ -56,6 +56,10 @@
                         <input type="date" class="form-control" [(ngModel)]="newConge.dateFin" name="dateFin" required>
                     </div>
                     <div class="mb-3">
+                        <label>Nombre de jours</label>
+                        <input type="number" class="form-control" [(ngModel)]="newConge.nbJours" name="nbJours" required readonly [value]="dateDiff(newConge.dateDebut, newConge.dateFin)">
+                    </div>
+                    <div class="mb-3">
                         <label>Raison</label>
                         <input type="text" class="form-control" [(ngModel)]="newConge.raison" name="raison" required>
                     </div>
