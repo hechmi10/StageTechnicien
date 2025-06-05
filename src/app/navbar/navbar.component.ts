@@ -11,8 +11,10 @@ export class NavbarComponent {
   // Assuming employee is injected or set from a service
   employee: Employee | undefined;
   isAdmin!: boolean;
+  isAuthenticated!: boolean;
 
   constructor() {
+    this.isAuthenticated = !!this.employee;
     if (this.employee?.role === Role.ADMIN) {
       this.isAdmin = true;
     } else if (this.employee?.role === Role.EMPLOYEE) {
