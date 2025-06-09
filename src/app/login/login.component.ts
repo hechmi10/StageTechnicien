@@ -1,47 +1,43 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth/auth.service'; // Use AuthService
 import { Role } from '../models/role';
-import { LoginService } from '../services/login/login.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  constructor(private router: Router,private _service:LoginService) { }
   login_form = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
+  errorMessage: string = '';
+
+  constructor(private router: Router, private authService: AuthService) {}
+
   onLogin(form: FormGroup) {
-  if (form.valid) {
-    const { email, password } = form.value;
-    
-    // First try employee login
-    this._service.login({ email, password }).subscribe({
-      next: (employeeData) => {
-        if (employeeData.role === Role.ADMIN) {
-          // If employee is actually admin, navigate to admin dashboard
-          this.router.navigate(['/gestion-absence']);
-        } else {
-          this.router.navigate(['/pointage']);
+    if (form.valid) {
+      this.errorMessage = '';
+      const { email, password } = form.value;
+
+      console.log('Login attempt:', { email });
+
+      this.authService.loginEmployee(email, password).subscribe({
+        next: (user) => {
+          console.log('Login successful:', user);
+          const redirectUrl = user.role === Role.ADMIN ? '/gestion-absence' : '/pointage';
+          this.router.navigate([redirectUrl]);
+        },
+        error: (err) => {
+          console.error('Login error:', err);
+          this.errorMessage = 'Login failed. Please check your credentials.';
         }
-      },
-      error: (employeeError) => {
-        // If employee login fails, try admin login
-        this._service.loginAdmin({ email, password }).subscribe({
-          next: (adminData) => {
-            this.router.navigate(['/gestion-absence']);
-          },
-          error: (adminError) => {
-            console.error('Both login attempts failed');
-            // Show error message to user
-          }
-        });
-      }
-    });
+      });
+    } else {
+      this.errorMessage = 'Please fill in all required fields correctly.';
+    }
   }
-}
 }

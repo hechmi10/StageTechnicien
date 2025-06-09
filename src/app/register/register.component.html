@@ -1,24 +1,63 @@
-<div class="container">
-    <h1>Register</h1>
-    <form (ngSubmit)="onSubmit(register_form)">
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+    <div class="card-body">
+      <h3 class="card-title text-center mb-4">SysHR Register</h3>
+      <form [formGroup]="register_form" (ngSubmit)="onSubmit(register_form)">
         <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" [formControl]="register_form.controls['email']" required>
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+          <label for="email" class="form-label">Email address</label>
+          <input
+            id="email"
+            formControlName="email"
+            class="form-control"
+            placeholder="Enter your email"
+            type="email"
+            [ngClass]="{'is-invalid': register_form.get('email')?.invalid && register_form.get('email')?.touched}"
+          >
+          <div *ngIf="register_form.get('email')?.invalid && register_form.get('email')?.touched" class="invalid-feedback">
+            <small *ngIf="register_form.get('email')?.errors?.['required']">Email is required.</small>
+            <small *ngIf="register_form.get('email')?.errors?.['email']">Please enter a valid email address.</small>
+          </div>
+          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" [formControl]="register_form.controls['password']" required>
+          <label for="password" class="form-label">Password</label>
+          <input
+            id="password"
+            formControlName="password"
+            class="form-control"
+            placeholder="Enter your password"
+            type="password"
+            [ngClass]="{'is-invalid': register_form.get('password')?.invalid && register_form.get('password')?.touched}"
+          >
+          <div *ngIf="register_form.get('password')?.invalid && register_form.get('password')?.touched" class="invalid-feedback">
+            <small *ngIf="register_form.get('password')?.errors?.['required']">Password is required.</small>
+            <small *ngIf="register_form.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</small>
+          </div>
         </div>
         <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select class="form-control" id="role" [formControl]="register_form.controls['role']" required>
+          <label for="role" class="form-label">Role</label>
+          <select
+            id="role"
+            formControlName="role"
+            class="form-select"
+            [ngClass]="{'is-invalid': register_form.get('role')?.invalid && register_form.get('role')?.touched}"
+          >
             <option value="" disabled>Select your role</option>
             <option value="ADMIN">Admin</option>
             <option value="EMPLOYEE">Employee</option>
-            </select>
-            <div class="form-text">Please enter your role.</div>
+          </select>
+          <div *ngIf="register_form.get('role')?.invalid && register_form.get('role')?.touched" class="invalid-feedback">
+            <small *ngIf="register_form.get('role')?.errors?.['required']">Role is required.</small>
+          </div>
+          <div class="form-text">Please select your role.</div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-primary" [disabled]="register_form.invalid">Submit</button>
+        </div>
+        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

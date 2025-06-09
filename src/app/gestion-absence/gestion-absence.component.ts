@@ -1,132 +1,179 @@
 import { Component, OnInit } from '@angular/core';
-import { Absence } from '../models/absence';
-import { Employee } from '../models/employee';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GestionAbsenceService } from '../services/absence/gestion-absence.service';
 import { EmployeeService } from '../services/employee/employee.service';
+import { Employee } from '../models/employee';
+import { Absence } from '../models/absence';
 
 @Component({
   selector: 'app-gestion-absence',
   templateUrl: './gestion-absence.component.html',
-  styleUrl: './gestion-absence.component.css'
+  styleUrls: ['./gestion-absence.component.css']
 })
-export class GestionAbsenceComponent implements OnInit{
-  constructor(private _absence_service: GestionAbsenceService, private _employee_service: EmployeeService) { }
-  employees: Employee[] = [];
+export class GestionAbsenceComponent implements OnInit {
   absences: Absence[] = [];
+  employees: Employee[] = [];
+  createForm: FormGroup;
+  updateForm: FormGroup;
   showCreateModal = false;
   showUpdateModal = false;
   showDeleteModal = false;
+  selectedAbsence: Absence | null = null;
 
-  newAbsence: any = { employee: null, startDate: '', endDate: '', raison: '' };
-  selectedAbsence: any = null;
-  selectedAbsenceIndex: number | null = null;
+  constructor(
+    private absenceService: GestionAbsenceService,
+    private employeeService: EmployeeService,
+    private fb: FormBuilder
+  ) {
+    this.createForm = this.fb.group({
+      employee: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      nbJours: [{ value: 0, disabled: true }, Validators.required],
+      raison: ['', Validators.required]
+    });
 
+    this.updateForm = this.fb.group({
+      employee: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      raison: ['', Validators.required]
+    });
 
-  ngOnInit() {
+    // Update nbJours when startDate or endDate changes
+    this.createForm.get('startDate')?.valueChanges.subscribe(() => this.updateNbJours());
+    this.createForm.get('endDate')?.valueChanges.subscribe(() => this.updateNbJours());
+  }
+
+  ngOnInit(): void {
     this.loadAbsences();
     this.loadEmployees();
   }
 
-  loadAbsences() {
-    this._absence_service.getAbsences().subscribe({
-      next: (data) => {
-        this.absences = data;
+  loadAbsences(): void {
+    this.absenceService.getAbsences().subscribe({
+      next: (absences) => {
+        console.log('Absences loaded:', absences);
+        this.absences = absences.filter(absence => absence.employee); // Filter out absences with null employee
       },
-      error: (error) => {
-        console.error('Error loading absences:', error);
-      }
+      error: (err) => console.error('Error loading absences:', err)
     });
   }
 
-  loadEmployees() {
-    this._employee_service.getEmployees().subscribe({
-      next: (data) => {
-        this.employees = data;
+  loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe({
+      next: (employees) => {
+        console.log('Employees loaded:', employees);
+        this.employees = employees;
       },
-      error: (error) => {
-        console.error('Error loading employees:', error);
-      }
+      error: (err) => console.error('Error loading employees:', err)
     });
   }
 
-  openCreateModal() {
+  updateNbJours(): void {
+    const startDate = this.createForm.get('startDate')?.value;
+    const endDate = this.createForm.get('endDate')?.value;
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      this.createForm.get('nbJours')?.setValue(diffDays);
+    }
+  }
+
+  openCreateModal(): void {
     this.showCreateModal = true;
-    this.newAbsence = { employee: null, startDate: '', endDate: '', raison: '' };
+    this.createForm.reset();
   }
 
-  closeCreateModal() {
+  closeCreateModal(): void {
     this.showCreateModal = false;
+    this.createForm.reset();
   }
 
-  createAbsence() {
-    this._absence_service.createAbsence(this.newAbsence).subscribe({
-      next: (data) => {
-        this.absences.push(data);
-      },
-      error: (error) => {
-        console.error('Error creating absence:', error);
-      }
-    });
-    this.closeCreateModal();
-  }
-
-  openUpdateModal(absence: any) {
-    this.showUpdateModal = true;
-    this.selectedAbsence = { ...absence };
-    this.selectedAbsenceIndex = this.absences.indexOf(absence);
-  }
-
-  closeUpdateModal() {
-    this.showUpdateModal = false;
-    this.selectedAbsence = null;
-    this.selectedAbsenceIndex = null;
-  }
-
-  updateAbsence() {
-    if (this.selectedAbsenceIndex !== null) {
-      this._absence_service.updateAbsence(this.selectedAbsenceIndex,this.selectedAbsence).subscribe({
-        next: (data) => {
-          this.absences[this.selectedAbsenceIndex!] = data;
+  createAbsence(): void {
+    if (this.createForm.valid) {
+      const absence: Absence = {
+        ...this.createForm.getRawValue(),
+        dateDebut: this.createForm.get('startDate')?.value,
+        dateFin: this.createForm.get('endDate')?.value
+      };
+      this.absenceService.createAbsence(absence).subscribe({
+        next: () => {
+          console.log('Absence created');
+          this.loadAbsences();
+          this.closeCreateModal();
         },
-        error: (error) => {
-          console.error('Error updating absence:', error);
-        }
+        error: (err) => console.error('Error creating absence:', err)
       });
     }
-    this.closeUpdateModal();
   }
 
-  openDeleteModal(absence: any) {
-    this.showDeleteModal = true;
+  openUpdateModal(absence: Absence): void {
+    if (!absence.employee) {
+      console.warn('Cannot update absence with null employee:', absence);
+      return;
+    }
+    this.selectedAbsence = { ...absence };
+    this.updateForm.patchValue({
+      employee: absence.employee,
+      startDate: absence.dateDebut,
+      endDate: absence.dateFin,
+      raison: absence.raison
+    });
+    this.showUpdateModal = true;
+  }
+
+  closeUpdateModal(): void {
+    this.showUpdateModal = false;
+    this.updateForm.reset();
+    this.selectedAbsence = null;
+  }
+
+  updateAbsence(): void {
+    if (this.updateForm.valid && this.selectedAbsence) {
+      const updatedAbsence: Absence = {
+        ...this.selectedAbsence,
+        ...this.updateForm.value,
+        dateDebut: this.updateForm.get('startDate')?.value,
+        dateFin: this.updateForm.get('endDate')?.value
+      };
+        if (updatedAbsence.id !== undefined) {
+    this.absenceService.updateAbsence(updatedAbsence.id, updatedAbsence).subscribe({
+      next: () => {
+        console.log('Absence updated');
+        this.loadAbsences();
+        this.closeUpdateModal();
+      },
+      error: (err) => console.error('Error updating absence:', err)
+    });
+  } else {
+    console.error('Cannot update absence: id is undefined', updatedAbsence);
+  }
+    }
+  }
+
+  openDeleteModal(absence: Absence): void {
     this.selectedAbsence = absence;
-    this.selectedAbsenceIndex = this.absences.indexOf(absence);
+    this.showDeleteModal = true;
   }
 
-  closeDeleteModal() {
+  closeDeleteModal(): void {
     this.showDeleteModal = false;
     this.selectedAbsence = null;
-    this.selectedAbsenceIndex = null;
   }
 
-  deleteAbsence() {
-    if (this.selectedAbsenceIndex !== null) {
-      this._absence_service.deleteAbsence(this.selectedAbsenceIndex).subscribe({
+  deleteAbsence(): void {
+    if (this.selectedAbsence?.id) {
+      this.absenceService.deleteAbsence(this.selectedAbsence.id).subscribe({
         next: () => {
-          this.absences = this.absences.filter((_, index) => index !== this.selectedAbsenceIndex);
+          console.log('Absence deleted');
+          this.loadAbsences();
+          this.closeDeleteModal();
         },
-        error: (error) => {
-          console.error('Error deleting absence:', error);
-        }
+        error: (err) => console.error('Error deleting absence:', err)
       });
     }
-    this.closeDeleteModal();
-  }
-  dateDiff(dateDebut: string | Date, dateFin: string | Date): number {
-    if (!dateDebut || !dateFin) return 0;
-    const debut = new Date(dateDebut);
-    const fin = new Date(dateFin);
-    const diffTime = fin.getTime() - debut.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return diffDays > 0 ? diffDays : 0;
   }
 }

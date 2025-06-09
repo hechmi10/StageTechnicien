@@ -1,73 +1,91 @@
-<!-- Absence Table -->
 <div class="container mt-4">
-    <h2>Gestion des Absences</h2>
+    <h2 class="mb-4">Gestion des Absences</h2>
     <button class="btn btn-primary mb-3" (click)="openCreateModal()">Ajouter une absence</button>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Employé</th>
-                <th>Date début</th>
-                <th>Date fin</th>
-                <th>Nombre de jours</th>
-                <th>Raison</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let absence of absences; let i = index">
-                <td>{{ i }}</td>
-                <td>{{ absence.employee!.email }} </td>
-                <td>{{ absence.dateDebut | date }}</td>
-                <td>{{ absence.dateFin | date }}</td>
-                <td>{{ absence.nbJours }}</td>
-                <td>{{ absence.raison }}</td>
-                <td>
-                    <button class="btn btn-sm btn-warning" (click)="openUpdateModal(absence)">Modifier</button>
-                    <button class="btn btn-sm btn-danger" (click)="openDeleteModal(absence)">Supprimer</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Employé</th>
+                        <th>Date début</th>
+                        <th>Date fin</th>
+                        <th>Nombre de jours</th>
+                        <th>Raison</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let absence of absences; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ absence.employee?.email || 'N/A' }}</td>
+                        <td>{{ absence.dateDebut | date: 'mediumDate' }}</td>
+                        <td>{{ absence.dateFin | date: 'mediumDate' }}</td>
+                        <td>{{ absence.nbJours || 'N/A' }}</td>
+                        <td>{{ absence.raison || 'N/A' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning me-2" (click)="openUpdateModal(absence)">Modifier</button>
+                            <button class="btn btn-sm btn-danger" (click)="openDeleteModal(absence)">Supprimer</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="absences.length === 0">
+                        <td colspan="7" class="text-center">Aucune absence trouvée</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <!-- Create Absence Modal -->
-<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form (ngSubmit)="createAbsence()">
+            <form [formGroup]="createForm" (ngSubmit)="createAbsence()">
                 <div class="modal-header">
                     <h5 class="modal-title">Ajouter une absence</h5>
                     <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="newAbsence.employee" name="employee" required>
-                            <option value="" disabled selected>Sélectionnez un employé</option>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
+                        <label for="createEmployee" class="form-label">Employé</label>
+                        <select id="createEmployee" formControlName="employee" class="form-select" [ngClass]="{'is-invalid': createForm.get('employee')?.invalid && createForm.get('employee')?.touched}">
+                            <option value="" disabled>Sélectionnez un employé</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
                         </select>
+                        <div *ngIf="createForm.get('employee')?.invalid && createForm.get('employee')?.touched" class="invalid-feedback">
+                            <small>Employé requis</small>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label>Date début</label>
-                        <input type="date" class="form-control" [(ngModel)]="newAbsence.startDate" name="startDate" required>
+                        <label for="createStartDate" class="form-label">Date début</label>
+                        <input id="createStartDate" formControlName="startDate" type="date" class="form-control" [ngClass]="{'is-invalid': createForm.get('startDate')?.invalid && createForm.get('startDate')?.touched}">
+                        <div *ngIf="createForm.get('startDate')?.invalid && createForm.get('startDate')?.touched" class="invalid-feedback">
+                            <small>Date début requise</small>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label>Date fin</label>
-                        <input type="date" class="form-control" [(ngModel)]="newAbsence.endDate" name="endDate" required>
+                        <label for="createEndDate" class="form-label">Date fin</label>
+                        <input id="createEndDate" formControlName="endDate" type="date" class="form-control" [ngClass]="{'is-invalid': createForm.get('endDate')?.invalid && createForm.get('endDate')?.touched}">
+                        <div *ngIf="createForm.get('endDate')?.invalid && createForm.get('endDate')?.touched" class="invalid-feedback">
+                            <small>Date fin requise</small>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label>Nombre de jours</label>
-                        <input type="number" class="form-control" [(ngModel)]="newAbsence.nbJours" name="nbJours" [value]="dateDiff(newAbsence.startDate, newAbsence.endDate)" required readonly>
+                        <label for="createNbJours" class="form-label">Nombre de jours</label>
+                        <input id="createNbJours" formControlName="nbJours" type="number" class="form-control" readonly>
                     </div>
                     <div class="mb-3">
-                        <label>Raison</label>
-                        <input type="text" class="form-control" [(ngModel)]="newAbsence.raison" name="raison" required>
+                        <label for="createRaison" class="form-label">Raison</label>
+                        <input id="createRaison" formControlName="raison" type="text" class="form-control" [ngClass]="{'is-invalid': createForm.get('raison')?.invalid && createForm.get('raison')?.touched}">
+                        <div *ngIf="createForm.get('raison')?.invalid && createForm.get('raison')?.touched" class="invalid-feedback">
+                            <small>Raison requise</small>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Créer</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Créer</button>
                 </div>
             </form>
         </div>
@@ -75,38 +93,50 @@
 </div>
 
 <!-- Update Absence Modal -->
-<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form (ngSubmit)="updateAbsence()">
+            <form [formGroup]="updateForm" (ngSubmit)="updateAbsence()">
                 <div class="modal-header">
                     <h5 class="modal-title">Modifier l'absence</h5>
                     <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="selectedAbsence.employee" name="employeeUpdate" required>
+                        <label for="updateEmployee" class="form-label">Employé</label>
+                        <select id="updateEmployee" formControlName="employee" class="form-select" [ngClass]="{'is-invalid': updateForm.get('employee')?.invalid && updateForm.get('employee')?.touched}">
                             <option value="" disabled>Sélectionnez un employé</option>
                             <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
                         </select>
+                        <div *ngIf="updateForm.get('employee')?.invalid && updateForm.get('employee')?.touched" class="invalid-feedback">
+                            <small>Employé requis</small>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label>Date début</label>
-                        <input type="date" class="form-control" [(ngModel)]="selectedAbsence.startDate" name="startDateUpdate" required>
+                        <label for="updateStartDate" class="form-label">Date début</label>
+                        <input id="updateStartDate" formControlName="startDate" type="date" class="form-control" [ngClass]="{'is-invalid': updateForm.get('startDate')?.invalid && updateForm.get('startDate')?.touched}">
+                        <div *ngIf="updateForm.get('startDate')?.invalid && updateForm.get('startDate')?.touched" class="invalid-feedback">
+                            <small>Date début requise</small>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label>Date fin</label>
-                        <input type="date" class="form-control" [(ngModel)]="selectedAbsence.endDate" name="endDateUpdate" required>
+                        <label for="updateEndDate" class="form-label">Date fin</label>
+                        <input id="updateEndDate" formControlName="endDate" type="date" class="form-control" [ngClass]="{'is-invalid': updateForm.get('endDate')?.invalid && updateForm.get('endDate')?.touched}">
+                        <div *ngIf="updateForm.get('endDate')?.invalid && updateForm.get('endDate')?.touched" class="invalid-feedback">
+                            <small>Date fin requise</small>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label>Raison</label>
-                        <input type="text" class="form-control" [(ngModel)]="selectedAbsence.reason" name="reasonUpdate" required>
+                        <label for="updateRaison" class="form-label">Raison</label>
+                        <input id="updateRaison" formControlName="raison" type="text" class="form-control" [ngClass]="{'is-invalid': updateForm.get('raison')?.invalid && updateForm.get('raison')?.touched}">
+                        <div *ngIf="updateForm.get('raison')?.invalid && updateForm.get('raison')?.touched" class="invalid-feedback">
+                            <small>Raison requise</small>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" (click)="closeUpdateModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="updateForm.invalid">Enregistrer</button>
                 </div>
             </form>
         </div>
@@ -114,7 +144,7 @@
 </div>
 
 <!-- Delete Absence Modal -->
-<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showDeleteModal}">
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showDeleteModal}" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -122,7 +152,7 @@
                 <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
             </div>
             <div class="modal-body">
-                <p>Voulez-vous vraiment supprimer cette absence de <strong>{{ selectedAbsence?.employee }}</strong> ?</p>
+                <p>Voulez-vous vraiment supprimer cette absence de <strong>{{ selectedAbsence?.employee?.email || 'N/A' }}</strong> ?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Annuler</button>
