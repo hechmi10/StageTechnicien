@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
+import { Role } from '../models/role'; // Import the Role enum
 
 @Component({
   selector: 'app-login',
@@ -31,10 +32,9 @@ export class LoginComponent {
     console.log('Login attempt:', { email });
 
     this.authService.login(email, password).subscribe({
-      next: () => {
-        console.log('Login successful');
-        // Default to a single page since no role data is available
-        const redirectUrl = '/pointage'; // Fallback to pointage for all users
+      next: (response) => {
+        console.log('Login successful, response:', response);
+        const redirectUrl = this.authService.isAdmin() ? '/gestion-absence' : '/pointage';
         this.router.navigate([redirectUrl]).then(() => {
           const isAuthenticated = this.authService.isAuthenticated();
           console.log('Post-login isAuthenticated:', isAuthenticated);
@@ -47,7 +47,7 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Login error:', err);
-        this.errorMessage = 'Login failed. Please check your credentials and ensure the server returns a valid token.';
+        this.errorMessage = 'Login failed. Please check your credentials and ensure the server returns a valid token and role.';
         this.authService.logout(); // Clear any partial state
       }
     });
