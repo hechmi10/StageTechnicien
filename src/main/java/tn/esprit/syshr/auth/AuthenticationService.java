@@ -8,7 +8,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -82,20 +84,33 @@ public class AuthenticationService {
                     )
             );
             logger.info("AuthenticationManager succeeded for email: {}", request.getEmail());
-            var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found: " + request.getEmail()));
-            logger.info("User retrieved: Email={}, Password Hash={}",
-                     user.getUsername(), user.getPassword());
+
+            UserDetails user = repository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + request.getEmail()));
+            logger.info("User retrieved: Email={}, Authorities={}", user.getUsername(), user.getAuthorities());
+
             var jwtToken = jwtService.generateToken(user);
-            logger.info("JWT generated for email: {}", request.getEmail());
+            logger.info("JWT generated for email: {}, authorities: {}", request.getEmail(), user.getAuthorities());
+
+            // Extract role from authorities (assuming one primary role)
+            String role = user.getAuthorities().stream()
+                    .findFirst()
+                    .map(GrantedAuthority::getAuthority)
+                    .map(auth -> auth.replace("ROLE_", "")) // Remove "ROLE_" prefix if present
+                    .orElse("EMPLOYEE"); // Default to EMPLOYEE if no authority found
+
             return AuthenticationResponse.builder()
                     .token(jwtToken)
+                    .role(role)
                     .build();
-        } catch (AuthenticationException e) {
-            logger.warn("Authentication failed due to credentials for email: {}", request.getEmail(), e);
-            throw new BadCredentialsException("Invalid email or password");
+        } catch (BadCredentialsException e) {
+            logger.warn("Authentication failed due to bad credentials for email: {}", request.getEmail(), e);
+            throw e; // Re-throw to be caught by the controller
+        } catch (UsernameNotFoundException e) {
+            logger.warn("Authentication failed due to user not found for email: {}", request.getEmail(), e);
+            throw new BadCredentialsException("Invalid email or password", e); // Map to BadCredentialsException
         } catch (Exception e) {
-            logger.error("Authentication failed unexpectedly for email: {}", request.getEmail(), e);
+            logger.error("Authentication failed unexpectedly for email: {}, error: {}", request.getEmail(), e.getMessage(), e);
             throw new RuntimeException("Failed to authenticate user: " + e.getMessage(), e);
         }
     }

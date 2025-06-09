@@ -38,17 +38,32 @@ public class AuthenticationController {
         logger.info("Authentication request for email: {}", request.getEmail());
         try {
             AuthenticationResponse response = service.authenticate(request);
-            logger.info("Authentication successful for email: {}", request.getEmail());
+            if (response.getToken() == null || response.getRole() == null) {
+                logger.warn("Authentication service returned incomplete response for email: {}", request.getEmail());
+                return ResponseEntity.status(500).body(
+                        AuthenticationResponse.builder()
+                                .error("Internal server error: Missing token or role")
+                                .build()
+                );
+            }
+            logger.info("Authentication successful for email: {}, role: {}", request.getEmail(), response.getRole());
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
-            logger.warn("Authentication failed for email: {} - Bad credentials", request.getEmail());
+            logger.warn("Authentication failed for email: {} - Bad credentials", request.getEmail(), e);
             return ResponseEntity.status(401).body(
                     AuthenticationResponse.builder()
                             .error("Invalid email or password")
                             .build()
             );
+        } catch (IllegalArgumentException e) {
+            logger.error("Authentication failed for email: {} - Invalid input: {}", request.getEmail(), e.getMessage(), e);
+            return ResponseEntity.status(400).body(
+                    AuthenticationResponse.builder()
+                            .error("Invalid input: " + e.getMessage())
+                            .build()
+            );
         } catch (Exception e) {
-            logger.error("Authentication failed for email: {} - {}", request.getEmail(), e.getMessage(), e);
+            logger.error("Authentication failed for email: {} - Unexpected error: {}", request.getEmail(), e.getMessage(), e);
             return ResponseEntity.status(500).body(
                     AuthenticationResponse.builder()
                             .error("Server error during authentication: " + e.getMessage())

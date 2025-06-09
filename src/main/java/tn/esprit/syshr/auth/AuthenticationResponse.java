@@ -16,6 +16,7 @@ public class AuthenticationResponse {
     private String refreshToken;*/
 
     private String token;
+    private String role;
     private String error; // Add this field
 
 }
