@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Employee } from '../../models/employee';
 import { Admin } from '../../models/admin';
 
@@ -9,14 +10,9 @@ import { Admin } from '../../models/admin';
 export class LoginService {
   private apiUrl: string = "http://localhost:8080/api/auth";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  login(req:{ email: string, password: string }) {
-    return this.http.post<Employee>(this.apiUrl + "/authenticate",req);
+  login(req: { email: string, password: string }): Observable<{ token: string, user: Employee | Admin }> {
+    return this.http.post<{ token: string, user: Employee | Admin }>(`${this.apiUrl}/authenticate`, req);
   }
-
-  loginAdmin(req:{ email: string, password: string }) {
-    return this.http.post<Admin>(this.apiUrl + "/authenticate",req);
-  }
-
 }

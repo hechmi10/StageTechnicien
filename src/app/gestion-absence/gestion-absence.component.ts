@@ -4,6 +4,7 @@ import { GestionAbsenceService } from '../services/absence/gestion-absence.servi
 import { EmployeeService } from '../services/employee/employee.service';
 import { Employee } from '../models/employee';
 import { Absence } from '../models/absence';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gestion-absence',
@@ -23,7 +24,8 @@ export class GestionAbsenceComponent implements OnInit {
   constructor(
     private absenceService: GestionAbsenceService,
     private employeeService: EmployeeService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.createForm = this.fb.group({
       employee: ['', Validators.required],
@@ -105,7 +107,12 @@ export class GestionAbsenceComponent implements OnInit {
           this.loadAbsences();
           this.closeCreateModal();
         },
-        error: (err) => console.error('Error creating absence:', err)
+        error: (err) => {
+          console.error('Error creating absence:', err);
+          if (err.status === 401) {
+            this.router.navigate(['/login']);
+          }
+        }
       });
     }
   }
@@ -140,7 +147,7 @@ export class GestionAbsenceComponent implements OnInit {
         dateFin: this.updateForm.get('endDate')?.value
       };
         if (updatedAbsence.id !== undefined) {
-    this.absenceService.updateAbsence(updatedAbsence.id, updatedAbsence).subscribe({
+    this.absenceService.updateAbsence(updatedAbsence).subscribe({
       next: () => {
         console.log('Absence updated');
         this.loadAbsences();

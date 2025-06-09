@@ -1,21 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Admin } from '../../models/admin';
+import { Observable } from 'rxjs';
 import { Employee } from '../../models/employee';
-import { Role } from '../../models/role';
+import { Admin } from '../../models/admin';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterService {
-private apiUrl: string = "http://localhost:8080/api/auth";
+  private apiUrl: string = 'http://localhost:8080/api/auth';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  signUp(emp:Employee) {
-    if(emp.role === Role.ADMIN) {
-      return this.http.post<Admin>(this.apiUrl + "/register", emp);
-    }
-    return this.http.post<Employee>(this.apiUrl + "/register",emp);
+  signUp(req: { email: string; password: string; role: string }): Observable<{ token: string, user: Employee | Admin }> {
+    return this.http.post<{ token: string, user: Employee | Admin }>(`${this.apiUrl}/register`, req);
   }
 }

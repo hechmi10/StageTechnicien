@@ -1,29 +1,34 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Absence } from '../../models/absence';
+import { AuthService } from '../auth/auth.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GestionAbsenceService {
+  private apiUrl = 'http://localhost:8080/api/absences';
 
-  constructor(private http:HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
-  private apiUrl:string="http://localhost:8080/api/absence";
-  getAbsences() {
-    return this.http.get<Absence[]>(this.apiUrl+"/get-all-absences");
+  getAbsences(): Observable<Absence[]> {
+    return this.http.get<Absence[]>(this.apiUrl, { headers: this.authService.getAuthHeaders() });
   }
 
-  createAbsence(absence: Absence) {
-    return this.http.post<Absence>(this.apiUrl+"/create-absence", absence);
+  createAbsence(absence: Absence): Observable<Absence> {
+    return this.http.post<Absence>(`${this.apiUrl}/create-absence`, absence, { headers: this.authService.getAuthHeaders() });
   }
 
-  updateAbsence(id:number,absence: Absence) {
-    return this.http.put<Absence>(this.apiUrl+"/update-absence/"+id, absence);
+  updateAbsence(absence: Absence): Observable<Absence> {
+    return this.http.put<Absence>(`${this.apiUrl}/${absence.id}`, absence, { headers: this.authService.getAuthHeaders() });
   }
 
-  deleteAbsence(id:number) {
-    return this.http.delete<Absence>(this.apiUrl+"/delete-absence/"+id);
+  deleteAbsence(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.authService.getAuthHeaders() });
   }
 
   getAbsenceById(id: number) {

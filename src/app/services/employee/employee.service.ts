@@ -1,32 +1,21 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Employee } from '../../models/employee';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
-  private apiUrl = 'http://localhost:8080/api/employee';
+  private apiUrl = 'http://localhost:8080/api/employees';
 
-  constructor(private http:HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
-  getEmployees() {
-    return this.http.get<Employee[]>(`${this.apiUrl}/get-all-employees`);
-  }
-
-  getEmployeeById(id: number) {
-    return this.http.get<Employee>(`${this.apiUrl}/get-employee/${id}`);
-  }
-
-  createEmployee(employee: Employee) {
-    return this.http.post<Employee>(`${this.apiUrl}/create-employee`, employee);
-  }
-
-  updateEmployee(id: number, employee: Employee) {
-    return this.http.put<Employee>(`${this.apiUrl}/update-employee/${id}`, employee);
-  }
-
-  deleteEmployee(id: number) {
-    return this.http.delete(`${this.apiUrl}/delete-employee/${id}`);
+  getEmployees(): Observable<Employee[]> {
+    return this.http.get<Employee[]>(this.apiUrl, { headers: this.authService.getAuthHeaders() });
   }
 }

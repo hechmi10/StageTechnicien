@@ -7,7 +7,7 @@ export class Employee{
     role?:Role;
     conges?:any[];
     absences?:any[];
-    evaluation:any;
+    evaluation?:any;
     autorisations?:any[];
     retards?:any[];
 }

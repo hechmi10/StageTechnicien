@@ -27,19 +27,18 @@ export class RegisterComponent {
   onSubmit(form: FormGroup) {
     if (form.valid) {
       this.errorMessage = '';
-      const employee = form.value;
-      const { email, password, role } = employee;
+      const { email, password, role } = form.value;
 
       console.log('Register attempt:', { email, role });
 
-      this.registerService.signUp(employee).subscribe({
-        next: (user) => {
-          console.log('Registration successful:', user);
-          // Attempt to log in the user
-          this.authService.loginEmployee(email, password).subscribe({
+      this.registerService.signUp({ email, password, role }).subscribe({
+        next: (response) => {
+          console.log('Registration successful:', response);
+          // Store token and user
+          this.authService.login(email, password).subscribe({
             next: () => {
               console.log('Auto-login successful');
-              const redirectUrl = user.role === Role.ADMIN ? '/gestion-absence' : '/pointage';
+              const redirectUrl = response.user.role === Role.ADMIN ? '/gestion-absence' : '/pointage';
               this.router.navigate([redirectUrl]);
             },
             error: (err) => {

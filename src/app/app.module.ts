@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { PointageComponent } from './pointage/pointage.component';
@@ -16,6 +16,7 @@ import { GestionCongeComponent } from './gestion-conge/gestion-conge.component';
 import { GestionEvaluationComponent } from './gestion-evaluation/gestion-evaluation.component';
 import { GestionAbsenceComponent } from './gestion-absence/gestion-absence.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
