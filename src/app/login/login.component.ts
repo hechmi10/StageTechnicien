@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
-import { Role } from '../models/role';
 
 @Component({
   selector: 'app-login',
@@ -32,19 +31,24 @@ export class LoginComponent {
     console.log('Login attempt:', { email });
 
     this.authService.login(email, password).subscribe({
-      next: (user) => {
-        console.log('Login successful, user:', user);
-        if (user && user.role) {
-          const redirectUrl = user.role === Role.ADMIN ? '/gestion-absence' : '/pointage';
-          this.router.navigate([redirectUrl]);
-        } else {
-          this.errorMessage = 'Login successful, but user role is undefined. Redirecting to default page.';
-          this.router.navigate(['/pointage']); // Fallback redirect
-        }
+      next: () => {
+        console.log('Login successful');
+        // Default to a single page since no role data is available
+        const redirectUrl = '/pointage'; // Fallback to pointage for all users
+        this.router.navigate([redirectUrl]).then(() => {
+          const isAuthenticated = this.authService.isAuthenticated();
+          console.log('Post-login isAuthenticated:', isAuthenticated);
+          if (!isAuthenticated) {
+            console.error('Authentication state not set correctly after login');
+            this.errorMessage = 'Login succeeded, but authentication state failed. Please try again.';
+          }
+        });
+        console.log('Redirecting to:', redirectUrl);
       },
       error: (err) => {
         console.error('Login error:', err);
-        this.errorMessage = 'Login failed. Please check your credentials or contact support.';
+        this.errorMessage = 'Login failed. Please check your credentials and ensure the server returns a valid token.';
+        this.authService.logout(); // Clear any partial state
       }
     });
   }

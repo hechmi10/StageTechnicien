@@ -1,6 +1,6 @@
 <!-- Show navbar only when authenticated -->
-<div *ngIf="isAuthenticated">
-    <nav class="navbar navbar-expand-lg" [ngClass]="isAdmin ? 'navbar-dark bg-dark' : 'navbar-primary bg-primary'">
+<div *ngIf="isAuthenticated()">
+    <nav class="navbar navbar-expand-lg" [ngClass]="isAdmin() ? 'navbar-dark bg-dark' : 'navbar-primary bg-primary'">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">SysHR</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -9,7 +9,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <ng-container *ngIf="isAdmin">
+                    <ng-container *ngIf="isAdmin()">
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/gestion-retard">Gestion des Retards</a>
                         </li>
@@ -26,7 +26,7 @@
                             <a class="nav-link" routerLink="/gestion-absence">Gestion des Absences</a>
                         </li>
                     </ng-container>
-                    <ng-container *ngIf="!isAdmin">
+                    <ng-container *ngIf="!isAdmin()">
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/pointage">Pointage</a>
                         </li>
