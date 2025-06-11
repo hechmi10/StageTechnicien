@@ -44,6 +44,7 @@
                     <div class="mb-3">
                         <label>Employé</label>
                         <select class="form-control" [(ngModel)]="newRetard.employee" name="employee" required>
+                            <option [ngValue]="null" disabled>Sélectionner un employé</option>
                             <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
                         </select>
                     </div>

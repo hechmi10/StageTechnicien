@@ -16,8 +16,8 @@
         </thead>
         <tbody>
             <tr *ngFor="let conge of conges; let i = index">
-                <td>{{ i }}</td>
-                <td>{{ conge.employee!.email }}</td>
+                <td>{{ i+1 }}</td>
+                <td>{{ conge.employee?.email }}</td>
                 <td>{{ conge.dateDebut | date }}</td>
                 <td>{{ conge.dateFin | date }}</td>
                 <td>{{ conge.nbJours }}</td>
@@ -43,13 +43,15 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="newConge.employe" name="employe" required>
+                        <select class="form-control" [(ngModel)]="newConge.employee" name="employe" required>
+                            <option [ngValue]="null" disabled>Sélectionner un employé</option>
                             <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label>Date Début</label>
-                        <input type="date" class="form-control" [(ngModel)]="newConge.dateDebut" name="dateDebut" required>
+                        <input type="date" class="form-control" [(ngModel)]="newConge.dateDebut" name="dateDebut"
+                            required>
                     </div>
                     <div class="mb-3">
                         <label>Date Fin</label>
@@ -57,15 +59,12 @@
                     </div>
                     <div class="mb-3">
                         <label>Nombre de jours</label>
-                        <input type="number" class="form-control" [(ngModel)]="newConge.nbJours" name="nbJours" required readonly [value]="dateDiff(newConge.dateDebut, newConge.dateFin)">
+                        <input type="number" class="form-control" [(ngModel)]="newConge.nbJours" name="nbJours" required
+                            readonly [value]="dateDiff(newConge.dateDebut, newConge.dateFin)">
                     </div>
                     <div class="mb-3">
                         <label>Raison</label>
                         <input type="text" class="form-control" [(ngModel)]="newConge.raison" name="raison" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Nombre de jours</label>
-                        <input type="number" class="form-control" [(ngModel)]="newConge.nbJours" value="{{newConge.dateFin - newConge.dateDebut}}" name="nbJours" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -81,7 +80,7 @@
 <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form (ngSubmit)="updateConge()">
+            <form [formGroup]="updateCongeForm" (ngSubmit)="updateConge()">
                 <div class="modal-header">
                     <h5 class="modal-title">Modifier le Congé</h5>
                     <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
@@ -89,26 +88,27 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="selectedConge.employe" name="employeUpdate" required>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
+                        <select class="form-control" formControlName="employe" required>
+                            <option [ngValue]="null" disabled>Sélectionner un employé</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label>Date Début</label>
-                        <input type="date" class="form-control" [(ngModel)]="selectedConge.dateDebut" name="dateDebutUpdate" required>
+                        <input type="date" class="form-control" formControlName="dateDebut" required>
                     </div>
                     <div class="mb-3">
                         <label>Date Fin</label>
-                        <input type="date" class="form-control" [(ngModel)]="selectedConge.dateFin" name="dateFinUpdate" required>
+                        <input type="date" class="form-control" formControlName="dateFin" required>
                     </div>
                     <div class="mb-3">
-                        <label>Type</label>
-                        <input type="text" class="form-control" [(ngModel)]="selectedConge.type" name="typeUpdate" required>
+                        <label>Raison</label>
+                        <input type="text" class="form-control" formControlName="raison" required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" (click)="closeUpdateModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="updateCongeForm.invalid">Enregistrer</button>
                 </div>
             </form>
         </div>

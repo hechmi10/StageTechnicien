@@ -3,6 +3,7 @@ import { Conge } from '../models/conge';
 import { Employee } from '../models/employee';
 import { GestionCongeService } from '../services/conge/gestion-conge.service';
 import { EmployeeService } from '../services/employee/employee.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-gestion-conge',
@@ -21,8 +22,17 @@ export class GestionCongeComponent implements OnInit {
   newConge: any = { employe: '', dateDebut: '', dateFin: '', type: '' };
   selectedConge: any = null;
 
+  updateCongeForm: FormGroup = new FormGroup({
+    employe:new FormControl ('', Validators.required),
+      dateDebut: new FormControl ('', Validators.required),
+      dateFin: new FormControl ('', Validators.required),
+      raison: new FormControl ('', Validators.required)
+  });
+
+
   ngOnInit() {
     this.loadConges();
+    this.loadEmployees();
   }
 
   loadConges() {
@@ -36,6 +46,17 @@ export class GestionCongeComponent implements OnInit {
     });
   }
   employees: Employee[] = [];
+
+  loadEmployees() {
+    this._employee_service.getEmployees().subscribe({
+      next: (data) => {
+        this.employees = data;
+      },
+      error: (error) => {
+        console.error('Error loading employees:', error);
+      }
+    });
+  }
 
   openCreateModal() {
     this.newConge = { employe: '', dateDebut: '', dateFin: '', type: '' };

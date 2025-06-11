@@ -13,7 +13,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let eval of evaluations; let i = index">
-                <td>{{ i }}</td>
+                <td>{{ i+1 }}</td>
                 <td>{{ eval.employee!.email }}</td>
                 <td>{{ eval.date | date }}</td>
                 <td>
@@ -38,6 +38,7 @@
                     <div class="mb-3">
                         <label>Employé</label>
                         <select class="form-control" [(ngModel)]="newEval.employee" name="employee" required>
+                            <option [ngValue]="null" disabled>Select an employee</option>
                             <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
                         </select>
                     </div>

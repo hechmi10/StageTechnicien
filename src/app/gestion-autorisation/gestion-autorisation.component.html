@@ -14,10 +14,10 @@
         </thead>
         <tbody>
             <tr *ngFor="let autorisation of autorisations">
+                <td>{{ autorisation.employee!.email }}</td>
                 <td>{{ autorisation.id }}</td>
                 <td>{{ autorisation.date | date:'yyyy-MM-dd' }}</td>
                 <td>{{ autorisation.duration }}</td>
-                <td>{{ autorisation.employee!.email }}</td>
                 <td>
                     <button class="btn btn-primary btn-sm" (click)="openEditModal(autorisation)">Edit</button>
                     <button class="btn btn-danger btn-sm" (click)="openDeleteModal(autorisation)">Delete</button>
@@ -47,6 +47,7 @@
                         <div class="mb-3">
                             <label>Employee</label>
                             <select class="form-control" formControlName="employee" required>
+                            <option [ngValue]="null" disabled>Select an employee</option>
                                 <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
                             </select>
                         </div>
@@ -84,6 +85,7 @@
                             <label>Employee</label>
                             <select class="form-control" [(ngModel)]="selectedAutorisation.employee" name="editEmployee"
                                 required>
+                            <option [ngValue]="null" disabled>Select an employee</option>
                                 <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
                             </select>
                         </div>

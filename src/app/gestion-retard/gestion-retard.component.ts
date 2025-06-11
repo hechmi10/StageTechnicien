@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Retard } from '../models/retard';
 import { Employee } from '../models/employee';
 import { GestionRetardService } from '../services/retard/gestion-retard.service';
+import { EmployeeService } from '../services/employee/employee.service';
 
 @Component({
   selector: 'app-gestion-retard',
@@ -9,7 +10,7 @@ import { GestionRetardService } from '../services/retard/gestion-retard.service'
   styleUrl: './gestion-retard.component.css'
 })
 export class GestionRetardComponent implements OnInit {
-  constructor(private _service: GestionRetardService) { }
+  constructor(private _service: GestionRetardService,private _employee_service: EmployeeService) { }
   retards: Retard[] = [];
   employees: Employee[] = [];
 
@@ -17,11 +18,12 @@ export class GestionRetardComponent implements OnInit {
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newRetard: any = { dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
+  newRetard: any = {employee:'', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
   selectedRetard: Retard | null = null;
 
   ngOnInit() {
     this.getRetards();
+    this.loadEmployees();
   }
 
   getRetards() {
@@ -34,6 +36,18 @@ export class GestionRetardComponent implements OnInit {
       }
     });
   }
+
+  loadEmployees() {
+    this._employee_service.getEmployees().subscribe({
+      next: (data) => {
+        this.employees = data;
+      },
+      error: (error) => {
+        console.error('Error loading employees:', error);
+      }
+    });
+  }
+
   selectedRetardIndex: number | null = null;
 
   openCreateModal() {
