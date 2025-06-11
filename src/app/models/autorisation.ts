@@ -3,6 +3,6 @@ import { Employee } from "./employee";
 export class Autorisation{
     id?:number;
     employee?:Employee;
-    date?:Date;
+    dateAutorisation?:Date;
     duration?:string;
 }
