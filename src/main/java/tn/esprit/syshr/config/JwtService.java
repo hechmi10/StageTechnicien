@@ -19,6 +19,8 @@ import java.util.function.Function;
 public class JwtService {
     // Updated to 32+ characters (Base64-encoded for 256+ bits)
     private static final String SECRET_KEY = "F55CA5F9831D7E6F497EF7346E76B1234567890ABCDEF"; // Should be longer (e.g., 32+ chars)
+    private final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000; // 15 minutes
+    private final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -37,13 +39,23 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("isRefreshToken", true); // Optional: mark as refresh token
+        return generateToken(claims, userDetails, REFRESH_TOKEN_EXPIRATION);
+    }
+
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return generateToken(extraClaims, userDetails, ACCESS_TOKEN_EXPIRATION);
+    }
+
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(STR."\{userDetails.getUsername()}") // Email for Learner
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 

@@ -32,6 +32,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+
     public AuthenticationResponse register(RegisterRequest request) {
         logger.info("Registering user: {}", request.getEmail());
         try {
@@ -113,5 +114,22 @@ public class AuthenticationService {
             logger.error("Authentication failed unexpectedly for email: {}, error: {}", request.getEmail(), e.getMessage(), e);
             throw new RuntimeException("Failed to authenticate user: " + e.getMessage(), e);
         }
+    }
+
+    public AuthenticationResponse refreshToken(String refreshToken) {
+        logger.info("Attempting to refresh token: {}", refreshToken);
+        String email = jwtService.extractUsername(refreshToken);
+        if (email == null || !jwtService.isTokenValid(refreshToken, null)) {
+            throw new BadCredentialsException("Invalid refresh token");
+        }
+        UserDetails employee = repository.findByEmail(email)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
+        String newToken = jwtService.generateToken(employee);
+        String newRefreshToken = jwtService.generateRefreshToken(employee);
+        return AuthenticationResponse.builder()
+                .token(newToken)
+                .role(employee.getAuthorities().toString())
+                .refreshToken(newRefreshToken)
+                .build();
     }
 }

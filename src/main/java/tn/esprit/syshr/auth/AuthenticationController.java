@@ -1,5 +1,6 @@
 package tn.esprit.syshr.auth;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,20 @@ public class AuthenticationController {
             return ResponseEntity.status(500).body(
                     AuthenticationResponse.builder()
                             .error("Server error during authentication: " + e.getMessage())
+                            .build()
+            );
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+        try {
+            AuthenticationResponse response = service.refreshToken(request.getRefreshToken());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(
+                    AuthenticationResponse.builder()
+                            .error("Invalid refresh token")
                             .build()
             );
         }

@@ -13,8 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.esprit.syshr.repositories.EmployeeRepository;
-import tn.esprit.syshr.services.EmployeeServiceImpl;
-import tn.esprit.syshr.services.IEmployeeService;
 
 @Configuration
 @RequiredArgsConstructor
