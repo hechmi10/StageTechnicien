@@ -46,6 +46,7 @@ public class Employee implements UserDetails {
     private EvaluationEmployee evaluation;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy="employee")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Autorisation> autorisations;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy="employee")
