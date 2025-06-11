@@ -110,7 +110,7 @@ export class GestionAbsenceComponent implements OnInit {
         error: (err) => {
           console.error('Error creating absence:', err);
           if (err.status === 401) {
-            this.router.navigate(['/login']);
+            this.closeCreateModal();
           }
         }
       });
