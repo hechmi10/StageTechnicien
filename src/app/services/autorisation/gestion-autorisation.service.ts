@@ -15,7 +15,7 @@ export class GestionAutorisationService {
   }
 
   createAutorisation(autorisation: Autorisation) {
-    return this.http.post<Autorisation>(this.apiUrl + "/create-autorisation", autorisation);
+    return this.http.post<Autorisation>(this.apiUrl + "/save-autorisation", autorisation);
   }
 
   updateAutorisation(id: number, autorisation: Autorisation) {

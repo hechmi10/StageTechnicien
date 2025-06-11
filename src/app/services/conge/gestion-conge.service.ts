@@ -15,7 +15,7 @@ export class GestionCongeService {
   }
 
   createConge(conge: Conge) {
-    return this.http.post<Conge>(this.apiUrl + "/create-conge", conge);
+    return this.http.post<Conge>(this.apiUrl + "/save-conge", conge);
   }
 
   updateConge(id: number, conge: Conge) {

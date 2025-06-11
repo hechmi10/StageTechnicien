@@ -11,23 +11,23 @@ export class GestionEvaluationService {
   constructor(private http: HttpClient) { }
 
   getEvaluation() {
-    return this.http.get<Evaluation[]>(this.apiUrl + "/get-all-evaluations");
+    return this.http.get<Evaluation[]>(this.apiUrl + "/get-all-evaluation-employees");
   }
 
   createEvaluation(evaluation: Evaluation) {
-    return this.http.post<Evaluation>(this.apiUrl + "/create-evaluation", evaluation);
+    return this.http.post<Evaluation>(this.apiUrl + "/create-evaluation-employee", evaluation);
   }
 
   updateEvaluation(id: number, evaluation: Evaluation) {
-    return this.http.put<Evaluation>(this.apiUrl + "/update-evaluation/" + id, evaluation);
+    return this.http.put<Evaluation>(this.apiUrl + "/update-evaluation-employee/" + id, evaluation);
   }
 
   deleteEvaluation(id: number) {
-    return this.http.delete<Evaluation>(this.apiUrl + "/delete-evaluation/" + id);
+    return this.http.delete<Evaluation>(this.apiUrl + "/delete-evaluation-employee/" + id);
   }
 
   getEvaluationById(id: number) {
-    return this.http.get<Evaluation>(this.apiUrl + "/get-evaluation-by-id/" + id);
+    return this.http.get<Evaluation>(this.apiUrl + "/get-evaluation-employee/" + id);
   }
 
 }

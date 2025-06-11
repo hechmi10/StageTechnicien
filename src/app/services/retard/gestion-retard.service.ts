@@ -15,7 +15,7 @@ export class GestionRetardService {
   }
 
   createRetard(retard: Retard) {
-    return this.http.post<Retard>(this.apiUrl + "/create-retard", retard);
+    return this.http.post<Retard>(this.apiUrl + "/save-retard", retard);
   }
 
   updateRetard(id: number, retard: Retard) {

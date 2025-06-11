@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth/auth.service';
   providedIn: 'root'
 })
 export class EmployeeService {
-  private apiUrl = 'http://localhost:8080/api/employees';
+  private apiUrl = 'http://localhost:8080/api/employee';
 
   constructor(
     private http: HttpClient,
@@ -16,6 +16,6 @@ export class EmployeeService {
   ) {}
 
   getEmployees(): Observable<Employee[]> {
-    return this.http.get<Employee[]>(this.apiUrl, { headers: this.authService.getAuthHeaders() });
+    return this.http.get<Employee[]>(this.apiUrl+"/get-all-employees", { headers: this.authService.getAuthHeaders() });
   }
 }
