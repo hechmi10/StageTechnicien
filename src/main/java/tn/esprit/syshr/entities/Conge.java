@@ -1,5 +1,8 @@
 package tn.esprit.syshr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +16,10 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Conge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,5 +31,6 @@ public class Conge {
 
     @JoinColumn(name="employee_id")
     @ManyToOne
+    @JsonIdentityReference(alwaysAsId = true) // Serialize employee as email ID
     private Employee employee;
 }

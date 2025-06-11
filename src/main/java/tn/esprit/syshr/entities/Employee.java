@@ -1,6 +1,9 @@
 package tn.esprit.syshr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -17,6 +20,10 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "email"
+)
 public class Employee implements UserDetails {
 
     @Id
@@ -29,6 +36,7 @@ public class Employee implements UserDetails {
     private Role role;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Conge> conges;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")

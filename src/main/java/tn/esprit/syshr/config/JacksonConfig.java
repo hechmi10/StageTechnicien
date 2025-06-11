@@ -6,11 +6,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.IOException;
 
@@ -20,16 +19,20 @@ public class JacksonConfig {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
+        // Set a reasonable max nesting depth to prevent StackOverflowError
         mapper.getFactory().setStreamWriteConstraints(
                 StreamWriteConstraints.builder()
-                        .maxNestingDepth(Integer.MAX_VALUE) // Increase to 2000 or appropriate value
+                        .maxNestingDepth(1900) // Adjusted from Integer.MAX_VALUE to a safe limit
                         .build()
         );
+        // Register custom deserializer for SimpleGrantedAuthority
         SimpleModule module = new SimpleModule();
         module.addDeserializer(SimpleGrantedAuthority.class, new SimpleGrantedAuthorityDeserializer());
         mapper.registerModule(module);
-        // Ignore unknown properties to avoid issues with extra fields
+        // Ignore unknown properties during deserialization
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        // Handle circular references gracefully
+        mapper.configure(com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
         return mapper;
     }
 
