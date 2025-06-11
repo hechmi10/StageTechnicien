@@ -1,5 +1,6 @@
 package tn.esprit.syshr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -42,6 +43,7 @@ public class Employee implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL,mappedBy="employee")
     private List<Retard> retards;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.getRole()));
