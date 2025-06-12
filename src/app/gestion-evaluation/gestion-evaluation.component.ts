@@ -14,13 +14,13 @@ export class GestionEvaluationComponent implements OnInit {
   constructor(private _eval_service: GestionEvaluationService, private _employee_service: EmployeeService) { }
   createForm = new FormGroup({
     employee: new FormControl('', Validators.required),
-
     date: new FormControl('', Validators.required)
   });
   updateForm = new FormGroup({
     employee: new FormControl('', Validators.required),
     date: new FormControl('', Validators.required)
   });
+  evaluations: Evaluation[] = [];
   ngOnInit(): void {
     this._eval_service.getEvaluation().subscribe((data: Evaluation[]) => {
       this.evaluations = data;
@@ -30,19 +30,18 @@ export class GestionEvaluationComponent implements OnInit {
       this.employees = data;
     });
   }
-  evaluations: Evaluation[] = [
-  ];
+
 
   showCreateModal = false;
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newEval = { date: new Date(), employee: null as Employee | null };
+  newEval = { date: null as Date | null, employee: null as Employee | null };
   selectedEval: Evaluation | null = null;
   employees: Employee[] = [];
 
   openCreateModal() {
-    this.newEval = { date: new Date(), employee: null };
+    this.newEval = { date: null, employee: null };
     this.showCreateModal = true;
   }
 
@@ -58,7 +57,7 @@ export class GestionEvaluationComponent implements OnInit {
       return;
     }
     this._eval_service.createEvaluation({
-      date: formValue.date ? new Date(formValue.date) : new Date(),
+      date: formValue.date ? formValue.date : new Date(),
       employee: selectedEmployee
     } as Evaluation).subscribe({
       next: (data) => {
@@ -119,7 +118,21 @@ export class GestionEvaluationComponent implements OnInit {
   }
 
   deleteEvaluation() {
-    this.evaluations = this.evaluations.filter(e => e !== this.selectedEval);
-    this.closeDeleteModal();
+    if (!this.selectedEval || this.selectedEval.id === undefined) {
+      console.error('Selected evaluation or its id is undefined');
+      return;
+    }
+    this._eval_service.deleteEvaluation(this.selectedEval.id).subscribe({
+      next: () => {
+        this.evaluations = this.evaluations.filter(e => e.id !== this.selectedEval!.id);
+        this._eval_service.getEvaluation().subscribe((data: Evaluation[]) => {
+          this.evaluations = data;
+        });
+        this.closeDeleteModal();
+      },
+      error: (error) => {
+        console.error('Error deleting evaluation:', error);
+      }
+    });
   }
 }

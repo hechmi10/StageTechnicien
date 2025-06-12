@@ -19,7 +19,7 @@ export class GestionCongeComponent implements OnInit {
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newConge: any = { employe: '', dateDebut: '', dateFin: '', type: '' };
+  newConge: any = { employe: '', dateDebut: '', dateFin: '', raison: '' };
   selectedConge: any = null;
 
   updateCongeForm: FormGroup = new FormGroup({
@@ -59,7 +59,7 @@ export class GestionCongeComponent implements OnInit {
   }
 
   openCreateModal() {
-    this.newConge = { employe: '', dateDebut: '', dateFin: '', type: '' };
+    this.newConge = { employe: '', dateDebut: '', dateFin: '', raison: '' };
     this.showCreateModal = true;
   }
 
@@ -123,6 +123,7 @@ export class GestionCongeComponent implements OnInit {
     this._conge_service.deleteConge(this.selectedConge.id).subscribe({
       next: () => {
         this.conges = this.conges.filter(c => c !== this.selectedConge);
+        this.loadConges();
       },
       error: (error) => {
         console.error('Error deleting conge:', error);

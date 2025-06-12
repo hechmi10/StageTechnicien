@@ -44,8 +44,12 @@
                     <div class="mb-3">
                         <label for="employee">Employé</label>
                         <select id="employee" class="form-control" formControlName="employee" required>
-                            <option [ngValue]="null" disabled selected>Sélectionner un employé</option>
-                            <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
+                            <option value="" disabled selected>Sélectionner un employé</option>
+                            <option *ngFor="let emp of employees" [value]="emp.email">
+                                <div *ngIf="emp.role === 'EMPLOYEE'">
+                                    {{ emp.email }}
+                                </div>
+                            </option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -58,9 +62,9 @@
                     </div>
                     <div class="mb-3">
                         <label for="nbJours">Nombre de Jours</label>
-                        <input id="nbJours" type="number" class="form-control"
-                            formControlName="nbJours"
-                            [value]="dateDiff(newRetard.dateDebut ?? '', newRetard.dateFin ?? '')" readonly>
+                        <input id="nbJours" type="number" class="form-control" formControlName="nbJours"
+                            [value]="dateDiff(createRetardForm.get('dateDebut')?.value ?? '', createRetardForm.get('dateFin')?.value ?? '')"
+                            readonly>
                     </div>
                     <div class="mb-3">
                         <label for="raison">Raison</label>
@@ -97,7 +101,9 @@
                     </div>
                     <div class="mb-3">
                         <label>Nombre de Jours</label>
-                        <input type="number" class="form-control" formControlName="nbJours" [value]="dateDiff(newRetard.dateDebut ?? '', newRetard.dateFin ?? '')" readonly>
+                        <input type="number" class="form-control" formControlName="nbJours"
+                            [value]="dateDiff(updateRetardForm.get('dateDebut')?.value ?? '', updateRetardForm.get('dateFin')?.value ?? '')"
+                            readonly>
                     </div>
                     <div class="mb-3">
                         <label>Raison</label>
@@ -105,10 +111,10 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                <button class="btn btn-secondary" (click)="closeUpdateModal()">Annuler</button>
-                <button class="btn btn-primary" (click)="updateRetard()"
-                    [disabled]="updateRetardForm.invalid">Enregistrer</button>
-            </div>
+                    <button class="btn btn-secondary" (click)="closeUpdateModal()">Annuler</button>
+                    <button class="btn btn-primary" (click)="updateRetard()"
+                        [disabled]="updateRetardForm.invalid">Enregistrer</button>
+                </div>
             </div>
         </div>
     </div>

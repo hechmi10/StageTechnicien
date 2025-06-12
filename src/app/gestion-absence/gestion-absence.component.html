@@ -24,7 +24,8 @@
                         <td>{{ absence.nbJours || 'N/A' }}</td>
                         <td>{{ absence.raison || 'N/A' }}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning me-2" (click)="openUpdateModal(absence)">Modifier</button>
+                            <button class="btn btn-sm btn-warning me-2"
+                                (click)="openUpdateModal(absence)">Modifier</button>
                             <button class="btn btn-sm btn-danger" (click)="openDeleteModal(absence)">Supprimer</button>
                         </td>
                     </tr>
@@ -38,7 +39,8 @@
 </div>
 
 <!-- Create Absence Modal -->
-<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}" style="background-color: rgba(0,0,0,0.5);">
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}"
+    style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
         <div class="modal-content">
             <form [formGroup]="createForm" (ngSubmit)="createAbsence()">
@@ -49,25 +51,35 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="createEmployee" class="form-label">Employé</label>
-                        <select id="createEmployee" formControlName="employee" class="form-select" [ngClass]="{'is-invalid': createForm.get('employee')?.invalid && createForm.get('employee')?.touched}">
+                        <select id="createEmployee" formControlName="employee" class="form-select"
+                            [ngClass]="{'is-invalid': createForm.get('employee')?.invalid && createForm.get('employee')?.touched}">
                             <option value="" disabled>Sélectionnez un employé</option>
-                            <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp">
+                                <div *ngIf="emp.role === 'EMPLOYEE'">
+                                    {{ emp.email }}
+                                </div>
+                            </option>
                         </select>
-                        <div *ngIf="createForm.get('employee')?.invalid && createForm.get('employee')?.touched" class="invalid-feedback">
+                        <div *ngIf="createForm.get('employee')?.invalid && createForm.get('employee')?.touched"
+                            class="invalid-feedback">
                             <small>Employé requis</small>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="createStartDate" class="form-label">Date début</label>
-                        <input id="createStartDate" formControlName="startDate" type="date" class="form-control" [ngClass]="{'is-invalid': createForm.get('startDate')?.invalid && createForm.get('startDate')?.touched}">
-                        <div *ngIf="createForm.get('startDate')?.invalid && createForm.get('startDate')?.touched" class="invalid-feedback">
+                        <input id="createStartDate" formControlName="startDate" type="date" class="form-control"
+                            [ngClass]="{'is-invalid': createForm.get('startDate')?.invalid && createForm.get('startDate')?.touched}">
+                        <div *ngIf="createForm.get('startDate')?.invalid && createForm.get('startDate')?.touched"
+                            class="invalid-feedback">
                             <small>Date début requise</small>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="createEndDate" class="form-label">Date fin</label>
-                        <input id="createEndDate" formControlName="endDate" type="date" class="form-control" [ngClass]="{'is-invalid': createForm.get('endDate')?.invalid && createForm.get('endDate')?.touched}">
-                        <div *ngIf="createForm.get('endDate')?.invalid && createForm.get('endDate')?.touched" class="invalid-feedback">
+                        <input id="createEndDate" formControlName="endDate" type="date" class="form-control"
+                            [ngClass]="{'is-invalid': createForm.get('endDate')?.invalid && createForm.get('endDate')?.touched}">
+                        <div *ngIf="createForm.get('endDate')?.invalid && createForm.get('endDate')?.touched"
+                            class="invalid-feedback">
                             <small>Date fin requise</small>
                         </div>
                     </div>
@@ -77,8 +89,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="createRaison" class="form-label">Raison</label>
-                        <input id="createRaison" formControlName="raison" type="text" class="form-control" [ngClass]="{'is-invalid': createForm.get('raison')?.invalid && createForm.get('raison')?.touched}">
-                        <div *ngIf="createForm.get('raison')?.invalid && createForm.get('raison')?.touched" class="invalid-feedback">
+                        <input id="createRaison" formControlName="raison" type="text" class="form-control"
+                            [ngClass]="{'is-invalid': createForm.get('raison')?.invalid && createForm.get('raison')?.touched}">
+                        <div *ngIf="createForm.get('raison')?.invalid && createForm.get('raison')?.touched"
+                            class="invalid-feedback">
                             <small>Raison requise</small>
                         </div>
                     </div>
@@ -93,7 +107,8 @@
 </div>
 
 <!-- Update Absence Modal -->
-<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}" style="background-color: rgba(0,0,0,0.5);">
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}"
+    style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
         <div class="modal-content">
             <form [formGroup]="updateForm" (ngSubmit)="updateAbsence()">
@@ -104,32 +119,44 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="updateEmployee" class="form-label">Employé</label>
-                        <select id="updateEmployee" formControlName="employee" class="form-select" [ngClass]="{'is-invalid': updateForm.get('employee')?.invalid && updateForm.get('employee')?.touched}">
+                        <select id="updateEmployee" formControlName="employee" class="form-select"
+                            [ngClass]="{'is-invalid': updateForm.get('employee')?.invalid && updateForm.get('employee')?.touched}">
                             <option value="" disabled>Sélectionnez un employé</option>
-                            <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp">
+                                <div *ngIf="emp.role === 'EMPLOYEE'">
+                                    {{ emp.email }}
+                                </div>
+                            </option>
                         </select>
-                        <div *ngIf="updateForm.get('employee')?.invalid && updateForm.get('employee')?.touched" class="invalid-feedback">
+                        <div *ngIf="updateForm.get('employee')?.invalid && updateForm.get('employee')?.touched"
+                            class="invalid-feedback">
                             <small>Employé requis</small>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="updateStartDate" class="form-label">Date début</label>
-                        <input id="updateStartDate" formControlName="startDate" type="date" class="form-control" [ngClass]="{'is-invalid': updateForm.get('startDate')?.invalid && updateForm.get('startDate')?.touched}">
-                        <div *ngIf="updateForm.get('startDate')?.invalid && updateForm.get('startDate')?.touched" class="invalid-feedback">
+                        <input id="updateStartDate" formControlName="startDate" type="date" class="form-control"
+                            [ngClass]="{'is-invalid': updateForm.get('startDate')?.invalid && updateForm.get('startDate')?.touched}">
+                        <div *ngIf="updateForm.get('startDate')?.invalid && updateForm.get('startDate')?.touched"
+                            class="invalid-feedback">
                             <small>Date début requise</small>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="updateEndDate" class="form-label">Date fin</label>
-                        <input id="updateEndDate" formControlName="endDate" type="date" class="form-control" [ngClass]="{'is-invalid': updateForm.get('endDate')?.invalid && updateForm.get('endDate')?.touched}">
-                        <div *ngIf="updateForm.get('endDate')?.invalid && updateForm.get('endDate')?.touched" class="invalid-feedback">
+                        <input id="updateEndDate" formControlName="endDate" type="date" class="form-control"
+                            [ngClass]="{'is-invalid': updateForm.get('endDate')?.invalid && updateForm.get('endDate')?.touched}">
+                        <div *ngIf="updateForm.get('endDate')?.invalid && updateForm.get('endDate')?.touched"
+                            class="invalid-feedback">
                             <small>Date fin requise</small>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="updateRaison" class="form-label">Raison</label>
-                        <input id="updateRaison" formControlName="raison" type="text" class="form-control" [ngClass]="{'is-invalid': updateForm.get('raison')?.invalid && updateForm.get('raison')?.touched}">
-                        <div *ngIf="updateForm.get('raison')?.invalid && updateForm.get('raison')?.touched" class="invalid-feedback">
+                        <input id="updateRaison" formControlName="raison" type="text" class="form-control"
+                            [ngClass]="{'is-invalid': updateForm.get('raison')?.invalid && updateForm.get('raison')?.touched}">
+                        <div *ngIf="updateForm.get('raison')?.invalid && updateForm.get('raison')?.touched"
+                            class="invalid-feedback">
                             <small>Raison requise</small>
                         </div>
                     </div>
@@ -144,7 +171,8 @@
 </div>
 
 <!-- Delete Absence Modal -->
-<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showDeleteModal}" style="background-color: rgba(0,0,0,0.5);">
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showDeleteModal}"
+    style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -152,7 +180,8 @@
                 <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
             </div>
             <div class="modal-body">
-                <p>Voulez-vous vraiment supprimer cette absence de <strong>{{ selectedAbsence?.employee?.email || 'N/A' }}</strong> ?</p>
+                <p>Voulez-vous vraiment supprimer cette absence de <strong>{{ selectedAbsence?.employee?.email || 'N/A'
+                        }}</strong> ?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Annuler</button>

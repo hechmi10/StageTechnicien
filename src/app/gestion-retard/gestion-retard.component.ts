@@ -8,7 +8,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-gestion-retard',
   templateUrl: './gestion-retard.component.html',
-  styleUrl: './gestion-retard.component.css'
+  styleUrls: ['./gestion-retard.component.css']
 })
 export class GestionRetardComponent implements OnInit {
 createRetardForm=new FormGroup({
@@ -22,7 +22,7 @@ updateRetardForm=new FormGroup({
   employee:new FormControl('',[Validators.required]),
   dateDebut:new FormControl('',[Validators.required]),
   dateFin:new FormControl('',[Validators.required]),
-  nbJours:new FormControl({value: 0, disabled: true},[Validators.required]),
+  nbJours:new FormControl( 0,[Validators.required]),
   raison:new FormControl('',[Validators.required])
 });
   constructor(private _service: GestionRetardService,private _employee_service: EmployeeService) { }
@@ -66,26 +66,38 @@ updateRetardForm=new FormGroup({
   selectedRetardIndex: number | null = null;
 
   openCreateModal() {
-    this.newRetard = { dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
-    this.showCreateModal = true;
-  }
+      this.newRetard = {employee: '', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
+      this.showCreateModal = true;
+    }
 
   closeCreateModal() {
     this.showCreateModal = false;
   }
 
   createRetard() {
-    this._service.createRetard(this.newRetard).subscribe({
-      next: (data) => {
-        console.log('Retard created successfully:', data);
-        this.retards.push({ ...this.newRetard });
-      },
-      error: (error) => {
-        console.error('Error creating retard:', error);
-      }
-    });
-    this.closeCreateModal();
+  const formValue = this.createRetardForm.value;
+  const selectedEmployee = this.employees.find(emp => emp.email === formValue.employee);
+  if (!selectedEmployee) {
+    console.error('Employee not found');
+    return;
   }
+    const retardToSend = {
+    ...formValue,
+    employee: selectedEmployee, // send the full Employee object
+    dateDebut: formValue.dateDebut ? new Date(formValue.dateDebut) : new Date(),
+    dateFin: formValue.dateFin ? new Date(formValue.dateFin) : new Date()
+  };
+  this._service.createRetard(retardToSend as Retard).subscribe({
+    next: (data) => {
+      console.log('Retard created successfully:', data);
+      this.retards.push(data);
+      this.closeCreateModal();
+    },
+    error: (error) => {
+      console.error('Error creating retard:', error);
+    }
+  });
+}
 
   openUpdateModal(retard: Retard) {
     this.selectedRetardIndex = this.retards.indexOf(retard);
@@ -108,7 +120,7 @@ updateRetardForm=new FormGroup({
       this._service.updateRetard(this.selectedRetardIndex, this.selectedRetard).subscribe({
         next: (data) => {
           console.log('Retard updated successfully:', data);
-          this.retards[this.selectedRetardIndex!] = { ...this.selectedRetard };
+          this.retards[this.selectedRetardIndex!] = { ...this.selectedRetard } as Retard;
         },
         error: (error) => {
           console.error('Error updating retard:', error);

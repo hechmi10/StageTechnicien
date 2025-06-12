@@ -39,7 +39,11 @@
                         <label>Employé</label>
                         <select class="form-control" formControlName="employee" required>
                             <option [ngValue]="null" disabled>Select an employee</option>
-                            <option *ngFor="let emp of employees" [ngValue]="emp.email">{{ emp.email }}</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp.email">
+                                <div *ngIf="emp.role === 'EMPLOYEE'">
+                                    {{ emp.email }}
+                                </div>
+                            </option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -50,7 +54,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
-                <button class="btn btn-primary" (click)="createEvaluation()" [disabled]=" !newEval.date">Create</button>
+                <button class="btn btn-primary" (click)="createEvaluation()" [disabled]=" !createForm.valid">Create</button>
             </div>
         </div>
     </div>

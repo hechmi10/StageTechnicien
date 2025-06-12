@@ -1,7 +1,7 @@
 <div class="container mt-4">
     <h2>Gestion des Autorisations</h2>
     <button class="btn btn-primary mb-2" (click)="openCreateModal()">Create Autorisation</button>
-    <table class="table table-bordered" *ngIf=" autorisations?.length">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Employee</th>
@@ -24,9 +24,6 @@
             </tr>
         </tbody>
     </table>
-    <div *ngIf=" !autorisations?.length" class="alert alert-info">
-        No autorisations available.
-    </div>
 
     <!-- Create Modal -->
     <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
@@ -42,7 +39,11 @@
                             <label for="employee">Employee</label>
                             <select id="employee" class="form-control" formControlName="employee" required>
                                 <option [ngValue]="null" disabled>Select an employee</option>
-                                <option *ngFor="let emp of employees" [ngValue]="emp.id">{{ emp.email }}</option>
+                                <option *ngFor="let emp of employees" [ngValue]="emp">
+                                    <div *ngIf="emp.role === 'EMPLOYEE'">
+                                        {{ emp.email }}
+                                    </div>
+                                </option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -79,7 +80,11 @@
                             <label>Employee</label>
                             <select class="form-control" formControlName="employee" required>
                                 <option [ngValue]="null" disabled>Select an employee</option>
-                                <option *ngFor="let emp of employees" [ngValue]="emp.id">{{ emp.email }}</option>
+                                <option *ngFor="let emp of employees" [ngValue]="emp.id">
+                                    <div *ngIf="emp.role === 'EMPLOYEE'">
+                                        {{ emp.email }}
+                                    </div>
+                                </option>
                             </select>
                         </div>
                         <div class="mb-3">

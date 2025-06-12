@@ -45,7 +45,11 @@
                         <label>Employé</label>
                         <select class="form-control" [(ngModel)]="newConge.employee" name="employe" required>
                             <option [ngValue]="null" disabled>Sélectionner un employé</option>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
+                            <option *ngFor="let emp of employees" [value]="emp">
+                                <div *ngIf="emp.role === 'EMPLOYEE'">
+                                    {{ emp.email }}
+                                </div>
+                            </option>
                         </select>
                     </div>
                     <div class="mb-3">
