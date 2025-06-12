@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class JwtService {
     // Updated to 32+ characters (Base64-encoded for 256+ bits)
     private static final String SECRET_KEY = "F55CA5F9831D7E6F497EF7346E76B1234567890ABCDEF"; // Should be longer (e.g., 32+ chars)
-    private final long ACCESS_TOKEN_EXPIRATION = 60 * 60 * 1000;
+    private final long ACCESS_TOKEN_EXPIRATION = 7* 24* 60 * 60 * 1000;
     private final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
     public String extractEmail(String token) {
