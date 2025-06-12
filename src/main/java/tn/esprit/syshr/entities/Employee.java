@@ -43,7 +43,7 @@ public class Employee implements UserDetails {
     private List<Absence> absences;
 
     @OneToMany(cascade=CascadeType.ALL,mappedBy="employee")
-    private List<EvaluationEmployee> evaluation;
+    private List<EvaluationEmployee> evaluations;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy="employee")
     @JsonIdentityReference(alwaysAsId = true)
