@@ -19,20 +19,21 @@ export class GestionCongeComponent implements OnInit {
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newConge: any = { employe: '', dateDebut: '', dateFin: '', raison: '' };
+  newConge: any = { employe: '', dateDebut: '', dateFin: '',nbJours:0, raison: '' };
   selectedConge: any = null;
 
   updateCongeForm: FormGroup = new FormGroup({
     employe:new FormControl ('', Validators.required),
       dateDebut: new FormControl ('', Validators.required),
       dateFin: new FormControl ('', Validators.required),
+      nbJours: new FormControl (0, Validators.required),
       raison: new FormControl ('', Validators.required)
   });
 
 
   ngOnInit() {
-    this.loadConges();
     this.loadEmployees();
+    this.loadConges();
   }
 
   loadConges() {
@@ -68,16 +69,39 @@ export class GestionCongeComponent implements OnInit {
   }
 
   createConge() {
-    this._conge_service.createConge(this.newConge).subscribe({
-      next: (data) => {
-        this.conges.push(data);
-      },
-      error: (error) => {
-        console.error('Error creating conge:', error);
-      }
-    });
-    this.closeCreateModal();
+  // Find the employee object by email
+  const selectedEmployee = this.employees.find(emp => emp.email === this.newConge.employe);
+  if (!selectedEmployee) {
+    alert('Veuillez sélectionner un employé valide.');
+    return;
   }
+
+  // Convert date strings to Date objects
+  const dateDebut = this.newConge.dateDebut ? new Date(this.newConge.dateDebut) : undefined;
+  const dateFin = this.newConge.dateFin ? new Date(this.newConge.dateFin) : undefined;
+
+  // Calculate number of days
+  const nbJours = (dateDebut && dateFin) ? this.dateDiff(dateDebut, dateFin) : 0;
+
+  // Prepare the object to send
+  const congeToSend = {
+    ...this.newConge,
+    employe: selectedEmployee,
+    dateDebut,
+    dateFin,
+    nbJours
+  };
+
+  this._conge_service.createConge(congeToSend).subscribe({
+    next: (data) => {
+      this.conges.push(data);
+      this.closeCreateModal();
+    },
+    error: (error) => {
+      console.error('Error creating conge:', error);
+    }
+  });
+}
 
   openUpdateModal(conge: any) {
     this.selectedConge = { ...conge };

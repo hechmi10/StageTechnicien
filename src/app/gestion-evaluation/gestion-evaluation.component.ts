@@ -57,7 +57,7 @@ export class GestionEvaluationComponent implements OnInit {
       return;
     }
     this._eval_service.createEvaluation({
-      date: formValue.date ? formValue.date : new Date(),
+      date: formValue.date ? new Date(formValue.date) : new Date(),
       employee: selectedEmployee
     } as Evaluation).subscribe({
       next: (data) => {

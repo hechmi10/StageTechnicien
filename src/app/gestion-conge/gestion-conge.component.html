@@ -43,9 +43,9 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="newConge.employee" name="employe" required>
+                        <select class="form-control" [(ngModel)]="newConge.employe" name="employe" required>
                             <option [ngValue]="null" disabled>Sélectionner un employé</option>
-                            <option *ngFor="let emp of employees" [value]="emp">
+                            <option *ngFor="let emp of employees" [value]="emp.email">
                                 <div *ngIf="emp.role === 'EMPLOYEE'">
                                     {{ emp.email }}
                                 </div>
@@ -128,7 +128,7 @@
                 <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
             </div>
             <div class="modal-body">
-                <p>Voulez-vous vraiment supprimer ce congé de <strong>{{ selectedConge?.employe }}</strong> ?</p>
+                <p>Voulez-vous vraiment supprimer ce congé ?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Annuler</button>

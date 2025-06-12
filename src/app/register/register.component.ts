@@ -35,18 +35,7 @@ export class RegisterComponent {
         next: (response) => {
           console.log('Registration successful:', response);
           // Store token and user
-          this.authService.login(email, password).subscribe({
-            next: () => {
-              console.log('Auto-login successful');
-              const redirectUrl = response.user.role === Role.ADMIN ? '/gestion-absence' : '/pointage';
-              this.router.navigate([redirectUrl]);
-            },
-            error: (err) => {
-              console.error('Auto-login error:', err);
-              this.errorMessage = 'Registration succeeded, but login failed. Please log in manually.';
-              this.router.navigate(['/login']);
-            }
-          });
+          this.router.navigate(['/login']);
         },
         error: (err) => {
           console.error('Registration error:', err);

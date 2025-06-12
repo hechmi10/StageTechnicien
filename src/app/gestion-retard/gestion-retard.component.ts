@@ -11,21 +11,21 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./gestion-retard.component.css']
 })
 export class GestionRetardComponent implements OnInit {
-createRetardForm=new FormGroup({
-  employee:new FormControl('',[Validators.required]),
-  dateDebut:new FormControl('',[Validators.required]),
-  dateFin:new FormControl('',[Validators.required]),
-  nbJours:new FormControl({value: 0, disabled: true},[Validators.required]),
-  raison:new FormControl('',[Validators.required])
-});
-updateRetardForm=new FormGroup({
-  employee:new FormControl('',[Validators.required]),
-  dateDebut:new FormControl('',[Validators.required]),
-  dateFin:new FormControl('',[Validators.required]),
-  nbJours:new FormControl( 0,[Validators.required]),
-  raison:new FormControl('',[Validators.required])
-});
-  constructor(private _service: GestionRetardService,private _employee_service: EmployeeService) { }
+  createRetardForm = new FormGroup({
+    employee: new FormControl('', [Validators.required]),
+    dateDebut: new FormControl('', [Validators.required]),
+    dateFin: new FormControl('', [Validators.required]),
+    nbJours: new FormControl(0, [Validators.required]),
+    raison: new FormControl('', [Validators.required])
+  });
+  updateRetardForm = new FormGroup({
+    employee: new FormControl('', [Validators.required]),
+    dateDebut: new FormControl('', [Validators.required]),
+    dateFin: new FormControl('', [Validators.required]),
+    nbJours: new FormControl(0, [Validators.required]),
+    raison: new FormControl('', [Validators.required])
+  });
+  constructor(private _service: GestionRetardService, private _employee_service: EmployeeService) { }
   retards: Retard[] = [];
   employees: Employee[] = [];
 
@@ -33,13 +33,26 @@ updateRetardForm=new FormGroup({
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newRetard: any = {employee:'', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
+  newRetard: any = { employee: '', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
   selectedRetard: Retard | null = null;
 
   ngOnInit() {
     this.getRetards();
     this.loadEmployees();
+    this.createRetardForm.get('dateDebut')?.valueChanges.subscribe(() => {
+      this.updateNbJours();
+    });
+    this.createRetardForm.get('dateFin')?.valueChanges.subscribe(() => {
+      this.updateNbJours();
+    });
   }
+
+  updateNbJours() {
+  const dateDebut = this.createRetardForm.get('dateDebut')?.value ?? '';
+  const dateFin = this.createRetardForm.get('dateFin')?.value ?? '';
+  const nbJours = this.dateDiff(dateDebut, dateFin);
+  this.createRetardForm.get('nbJours')?.setValue(nbJours, { emitEvent: false });
+}
 
   getRetards() {
     this._service.getRetard().subscribe({
@@ -66,38 +79,38 @@ updateRetardForm=new FormGroup({
   selectedRetardIndex: number | null = null;
 
   openCreateModal() {
-      this.newRetard = {employee: '', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
-      this.showCreateModal = true;
-    }
+    this.newRetard = { employee: '', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
+    this.showCreateModal = true;
+  }
 
   closeCreateModal() {
     this.showCreateModal = false;
   }
 
   createRetard() {
-  const formValue = this.createRetardForm.value;
-  const selectedEmployee = this.employees.find(emp => emp.email === formValue.employee);
-  if (!selectedEmployee) {
-    console.error('Employee not found');
-    return;
-  }
-    const retardToSend = {
-    ...formValue,
-    employee: selectedEmployee, // send the full Employee object
-    dateDebut: formValue.dateDebut ? new Date(formValue.dateDebut) : new Date(),
-    dateFin: formValue.dateFin ? new Date(formValue.dateFin) : new Date()
-  };
-  this._service.createRetard(retardToSend as Retard).subscribe({
-    next: (data) => {
-      console.log('Retard created successfully:', data);
-      this.retards.push(data);
-      this.closeCreateModal();
-    },
-    error: (error) => {
-      console.error('Error creating retard:', error);
+    const formValue = this.createRetardForm.value;
+    const selectedEmployee = this.employees.find(emp => emp.email === formValue.employee);
+    if (!selectedEmployee) {
+      console.error('Employee not found');
+      return;
     }
-  });
-}
+    const retardToSend = {
+      ...formValue,
+      employee: selectedEmployee, // send the full Employee object
+      dateDebut: formValue.dateDebut ? new Date(formValue.dateDebut) : new Date(),
+      dateFin: formValue.dateFin ? new Date(formValue.dateFin) : new Date()
+    };
+    this._service.createRetard(retardToSend as Retard).subscribe({
+      next: (data) => {
+        console.log('Retard created successfully:', data);
+        this.retards.push(data);
+        this.closeCreateModal();
+      },
+      error: (error) => {
+        console.error('Error creating retard:', error);
+      }
+    });
+  }
 
   openUpdateModal(retard: Retard) {
     this.selectedRetardIndex = this.retards.indexOf(retard);

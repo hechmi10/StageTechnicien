@@ -18,7 +18,7 @@
                 </td>
                 <td>{{ autorisation?.duration }}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm" (click)="openUpdateModal(autorisation)">Edit</button>
+                    <button class="btn btn-warning btn-sm" (click)="openUpdateModal(autorisation)">Edit</button>
                     <button class="btn btn-danger btn-sm" (click)="openDeleteModal(autorisation)">Delete</button>
                 </td>
             </tr>
@@ -39,7 +39,7 @@
                             <label for="employee">Employee</label>
                             <select id="employee" class="form-control" formControlName="employee" required>
                                 <option [ngValue]="null" disabled>Select an employee</option>
-                                <option *ngFor="let emp of employees" [ngValue]="emp">
+                                <option *ngFor="let emp of employees" [ngValue]="emp.email">
                                     <div *ngIf="emp.role === 'EMPLOYEE'">
                                         {{ emp.email }}
                                     </div>
@@ -80,7 +80,7 @@
                             <label>Employee</label>
                             <select class="form-control" formControlName="employee" required>
                                 <option [ngValue]="null" disabled>Select an employee</option>
-                                <option *ngFor="let emp of employees" [ngValue]="emp.id">
+                                <option *ngFor="let emp of employees" [ngValue]="emp.email">
                                     <div *ngIf="emp.role === 'EMPLOYEE'">
                                         {{ emp.email }}
                                     </div>

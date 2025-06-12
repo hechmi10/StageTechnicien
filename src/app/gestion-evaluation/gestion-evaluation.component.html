@@ -15,7 +15,7 @@
             <tr *ngFor="let eval of evaluations; let i = index">
                 <td>{{ i+1 }}</td>
                 <td>{{ eval?.employee?.email }}</td>
-                <td>{{ eval?.date | date }}</td>
+                <td>{{ eval?.date ? (eval.date | date:'yyyy-MM-dd') : '' }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="openUpdateModal(eval)">Update</button>
                     <button class="btn btn-sm btn-danger" (click)="openDeleteModal(eval)">Delete</button>

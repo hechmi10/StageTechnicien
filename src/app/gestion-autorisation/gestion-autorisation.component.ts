@@ -72,13 +72,21 @@ export class GestionAutorisationComponent implements OnInit {
 
   createAutorisation() {
   const formValue = this.createAutorisationForm.value;
+  // Find the full employee object by email
+  const employeeObj = this.employees.find(e => e.email === formValue.employee);
+  if (!employeeObj) {
+    console.error('Employee not found');
+    return;
+  }
+  // Prepare the object to send (send only the ID if backend expects it)
   const autorisationToSend = {
     ...formValue,
-    employee: formValue.employee.id // send only the ID if needed
+    employee: employeeObj.id
   };
   this._autorisation_service.createAutorisation(autorisationToSend).subscribe({
     next: (data) => {
-      this.autorisations.push(data);
+      // For display, attach the full employee object
+      this.autorisations.push({ ...data, employee: employeeObj });
       this.closeCreateModal();
     },
     error: (error) => {
