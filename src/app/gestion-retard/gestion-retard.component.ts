@@ -3,6 +3,7 @@ import { Retard } from '../models/retard';
 import { Employee } from '../models/employee';
 import { GestionRetardService } from '../services/retard/gestion-retard.service';
 import { EmployeeService } from '../services/employee/employee.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-gestion-retard',
@@ -10,6 +11,20 @@ import { EmployeeService } from '../services/employee/employee.service';
   styleUrl: './gestion-retard.component.css'
 })
 export class GestionRetardComponent implements OnInit {
+createRetardForm=new FormGroup({
+  employee:new FormControl('',[Validators.required]),
+  dateDebut:new FormControl('',[Validators.required]),
+  dateFin:new FormControl('',[Validators.required]),
+  nbJours:new FormControl({value: 0, disabled: true},[Validators.required]),
+  raison:new FormControl('',[Validators.required])
+});
+updateRetardForm=new FormGroup({
+  employee:new FormControl('',[Validators.required]),
+  dateDebut:new FormControl('',[Validators.required]),
+  dateFin:new FormControl('',[Validators.required]),
+  nbJours:new FormControl({value: 0, disabled: true},[Validators.required]),
+  raison:new FormControl('',[Validators.required])
+});
   constructor(private _service: GestionRetardService,private _employee_service: EmployeeService) { }
   retards: Retard[] = [];
   employees: Employee[] = [];

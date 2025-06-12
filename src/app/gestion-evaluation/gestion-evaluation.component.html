@@ -14,8 +14,8 @@
         <tbody>
             <tr *ngFor="let eval of evaluations; let i = index">
                 <td>{{ i+1 }}</td>
-                <td>{{ eval.employee!.email }}</td>
-                <td>{{ eval.date | date }}</td>
+                <td>{{ eval?.employee?.email }}</td>
+                <td>{{ eval?.date | date }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="openUpdateModal(eval)">Update</button>
                     <button class="btn btn-sm btn-danger" (click)="openDeleteModal(eval)">Delete</button>
@@ -34,21 +34,19 @@
                 <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
             </div>
             <div class="modal-body">
-                <form #createForm="ngForm">
+                <form [formGroup]="createForm">
                     <div class="mb-3">
                         <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="newEval.employee" name="employee" required>
+                        <select class="form-control" formControlName="employee" required>
                             <option [ngValue]="null" disabled>Select an employee</option>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp.email">{{ emp.email }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label>Date</label>
-                        <input type="date" class="form-control" [(ngModel)]="newEval.date" name="date" required>
+                        <input type="date" class="form-control" formControlName="date" required>
                     </div>
-
                 </form>
-
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
@@ -67,16 +65,24 @@
                 <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
             </div>
             <div class="modal-body">
-                <form #updateForm="ngForm">
+                <form [formGroup]="updateForm">
+                    <div class="mb-3">
+                        <label>Employé</label>
+                        <select class="form-control" formControlName="employee" required>
+                            <option [ngValue]="null" disabled>Select an employee</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp.email">{{ emp.email }}</option>
+                        </select>
+                    </div>
                     <div class="mb-3">
                         <label>Date</label>
-                        <input type="date" class="form-control" [(ngModel)]="selectedEval!.date" name="date" required>
+                        <input type="date" class="form-control" formControlName="date" required>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" (click)="closeUpdateModal()">Cancel</button>
-                <button class="btn btn-primary" (click)="updateEvaluation()" [disabled]=" !selectedEval?.date">Update</button>
+                <button class="btn btn-primary" (click)="updateEvaluation()"
+                    [disabled]=" !selectedEval?.date">Update</button>
             </div>
         </div>
     </div>

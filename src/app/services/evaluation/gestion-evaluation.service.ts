@@ -15,7 +15,7 @@ export class GestionEvaluationService {
   }
 
   createEvaluation(evaluation: Evaluation) {
-    return this.http.post<Evaluation>(this.apiUrl + "/create-evaluation-employee", evaluation);
+    return this.http.post<Evaluation>(this.apiUrl + "/save-evaluation-employee", evaluation);
   }
 
   updateEvaluation(id: number, evaluation: Evaluation) {

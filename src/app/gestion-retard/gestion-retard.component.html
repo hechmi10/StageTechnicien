@@ -16,12 +16,12 @@
         </thead>
         <tbody>
             <tr *ngFor="let retard of retards; let i = index">
-                <td>{{ i }}</td>
-                <td>{{retard.employee!.email}}</td>
-                <td>{{ retard.dateDebut | date }}</td>
-                <td>{{ retard.dateFin | date }}</td>
-                <td>{{ retard.nbJours }}</td>
-                <td>{{ retard.raison }}</td>
+                <td>{{ i+1 }}</td>
+                <td>{{retard?.employee?.email}}</td>
+                <td>{{ retard?.dateDebut | date }}</td>
+                <td>{{ retard?.dateFin | date }}</td>
+                <td>{{ retard?.nbJours }}</td>
+                <td>{{ retard?.raison }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="openUpdateModal(retard)">Modifier</button>
                     <button class="btn btn-sm btn-danger" (click)="openDeleteModal(retard)">Supprimer</button>
@@ -40,35 +40,38 @@
                 <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
             </div>
             <div class="modal-body">
-                <form #createForm="ngForm">
+                <form [formGroup]="createRetardForm">
                     <div class="mb-3">
-                        <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="newRetard.employee" name="employee" required>
-                            <option [ngValue]="null" disabled>Sélectionner un employé</option>
-                            <option *ngFor="let emp of employees" [value]="emp">{{ emp.email }}</option>
+                        <label for="employee">Employé</label>
+                        <select id="employee" class="form-control" formControlName="employee" required>
+                            <option [ngValue]="null" disabled selected>Sélectionner un employé</option>
+                            <option *ngFor="let emp of employees" [ngValue]="emp">{{ emp.email }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label>Date Debut</label>
-                        <input type="date" class="form-control" [(ngModel)]="newRetard.dateDebut" name="dateDebut" required>
+                        <label for="dateDebut">Date Début</label>
+                        <input id="dateDebut" type="date" class="form-control" formControlName="dateDebut" required>
                     </div>
                     <div class="mb-3">
-                        <label>Date Fin</label>
-                        <input type="date" class="form-control" [(ngModel)]="newRetard.dateFin" name="dateFin" required>
+                        <label for="dateFin">Date Fin</label>
+                        <input id="dateFin" type="date" class="form-control" formControlName="dateFin" required>
                     </div>
                     <div class="mb-3">
-                        <label>Nombre de Jours</label>
-                        <input type="number" class="form-control" [(ngModel)]="newRetard.nbJours" [value]="dateDiff(newRetard.dateDebut, newRetard.dateFin)" name="nbJours" required readonly>
+                        <label for="nbJours">Nombre de Jours</label>
+                        <input id="nbJours" type="number" class="form-control"
+                            formControlName="nbJours"
+                            [value]="dateDiff(newRetard.dateDebut ?? '', newRetard.dateFin ?? '')" readonly>
                     </div>
                     <div class="mb-3">
-                        <label>Raison</label>
-                        <input type="text" class="form-control" [(ngModel)]="newRetard.raison" name="raison" required>
+                        <label for="raison">Raison</label>
+                        <input id="raison" type="text" class="form-control" formControlName="raison" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
+                        <button type="button" class="btn btn-primary" (click)="createRetard()"
+                            [disabled]="createRetardForm.invalid">Créer</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
-                <button class="btn btn-primary" (click)="createRetard()" [disabled]="!newRetard.dateDebut || !newRetard.dateFin || !newRetard.raison">Créer</button>
             </div>
         </div>
     </div>
@@ -83,24 +86,29 @@
                 <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
             </div>
             <div class="modal-body">
-                <form #updateForm="ngForm">
+                <form [formGroup]="updateRetardForm">
                     <div class="mb-3">
                         <label>Date Debut</label>
-                        <input type="date" class="form-control" [(ngModel)]="selectedRetard!.dateDebut" name="dateDebut" required>
+                        <input type="date" class="form-control" formControlName="dateDebut" required>
                     </div>
                     <div class="mb-3">
                         <label>Date Fin</label>
-                        <input type="date" class="form-control" [(ngModel)]="selectedRetard!.dateFin" name="dateFin" required>
+                        <input type="date" class="form-control" formControlName="dateFin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Nombre de Jours</label>
+                        <input type="number" class="form-control" formControlName="nbJours" [value]="dateDiff(newRetard.dateDebut ?? '', newRetard.dateFin ?? '')" readonly>
                     </div>
                     <div class="mb-3">
                         <label>Raison</label>
-                        <input type="text" class="form-control" [(ngModel)]="selectedRetard!.raison" name="raison" required>
+                        <input type="text" class="form-control" formControlName="raison" required>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
+                <div class="modal-footer">
                 <button class="btn btn-secondary" (click)="closeUpdateModal()">Annuler</button>
-                <button class="btn btn-primary" (click)="updateRetard()" [disabled]="!selectedRetard?.dateDebut || !selectedRetard?.dateFin || !selectedRetard?.raison">Enregistrer</button>
+                <button class="btn btn-primary" (click)="updateRetard()"
+                    [disabled]="updateRetardForm.invalid">Enregistrer</button>
+            </div>
             </div>
         </div>
     </div>

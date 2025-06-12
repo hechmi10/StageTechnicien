@@ -17,11 +17,11 @@
         <tbody>
             <tr *ngFor="let conge of conges; let i = index">
                 <td>{{ i+1 }}</td>
-                <td>{{ conge.employee?.email }}</td>
-                <td>{{ conge.dateDebut | date }}</td>
-                <td>{{ conge.dateFin | date }}</td>
-                <td>{{ conge.nbJours }}</td>
-                <td>{{ conge.raison }}</td>
+                <td>{{ conge?.employee?.email }}</td>
+                <td>{{ conge?.dateDebut | date }}</td>
+                <td>{{ conge?.dateFin | date }}</td>
+                <td>{{ conge?.nbJours }}</td>
+                <td>{{ conge?.raison }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="openUpdateModal(conge)">Modifier</button>
                     <button class="btn btn-sm btn-danger" (click)="openDeleteModal(conge)">Supprimer</button>

@@ -3,6 +3,7 @@ import { Evaluation } from '../models/evaluation';
 import { Employee } from '../models/employee';
 import { GestionEvaluationService } from '../services/evaluation/gestion-evaluation.service';
 import { EmployeeService } from '../services/employee/employee.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-gestion-evaluation',
@@ -10,7 +11,16 @@ import { EmployeeService } from '../services/employee/employee.service';
   styleUrl: './gestion-evaluation.component.css'
 })
 export class GestionEvaluationComponent implements OnInit {
-  constructor(private _eval_service: GestionEvaluationService,private _employee_service: EmployeeService) { }
+  constructor(private _eval_service: GestionEvaluationService, private _employee_service: EmployeeService) { }
+  createForm = new FormGroup({
+    employee: new FormControl('', Validators.required),
+
+    date: new FormControl('', Validators.required)
+  });
+  updateForm = new FormGroup({
+    employee: new FormControl('', Validators.required),
+    date: new FormControl('', Validators.required)
+  });
   ngOnInit(): void {
     this._eval_service.getEvaluation().subscribe((data: Evaluation[]) => {
       this.evaluations = data;
@@ -27,12 +37,12 @@ export class GestionEvaluationComponent implements OnInit {
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newEval: Evaluation = { date:new Date() };
+  newEval = { date: new Date(), employee: null as Employee | null };
   selectedEval: Evaluation | null = null;
   employees: Employee[] = [];
 
   openCreateModal() {
-    this.newEval = { date: new Date() };
+    this.newEval = { date: new Date(), employee: null };
     this.showCreateModal = true;
   }
 
@@ -41,10 +51,24 @@ export class GestionEvaluationComponent implements OnInit {
   }
 
   createEvaluation() {
-    this.evaluations.push({
-      date: this.newEval.date,
+    const formValue = this.createForm.value;
+    const selectedEmployee = this.employees.find(emp => emp.email === formValue.employee);
+    if (!selectedEmployee) {
+      console.error('Selected employee email not found');
+      return;
+    }
+    this._eval_service.createEvaluation({
+      date: formValue.date ? new Date(formValue.date) : new Date(),
+      employee: selectedEmployee
+    } as Evaluation).subscribe({
+      next: (data) => {
+        this.evaluations.push(data);
+        this.closeCreateModal();
+      },
+      error: (error) => {
+        console.error('Error creating evaluation:', error);
+      }
     });
-    this.closeCreateModal();
   }
 
   openUpdateModal(evalObj: any) {
@@ -58,17 +82,30 @@ export class GestionEvaluationComponent implements OnInit {
   }
 
   updateEvaluation() {
-    const idx = this.evaluations.findIndex(e => e.date === this.selectedEval!.date );
-    if (idx !== -1) {
-      this.evaluations[idx] = { ...this.selectedEval };
-    } else {
-      // fallback: update by index if title/date/score changed
-      const origIdx = this.evaluations.findIndex(e => e.date === this.selectedEval!.date);
-      if (origIdx !== -1) {
-        this.evaluations[origIdx] = { ...this.selectedEval };
-      }
+    const formValue = this.updateForm.value;
+    const selectedEmployee = this.employees.find(emp => emp.email === formValue.employee);
+    if (!selectedEmployee) {
+      console.error('Selected employee email not found');
+      return;
     }
-    this.closeUpdateModal();
+    // Ensure selectedEval and its id are defined
+    if (!this.selectedEval || this.selectedEval.id === undefined) {
+      console.error('Selected evaluation or its id is undefined');
+      return;
+    }
+    this._eval_service.updateEvaluation(this.selectedEval.id, {
+      date: formValue.date ? new Date(formValue.date) : new Date(),
+      employee: selectedEmployee
+    } as Evaluation).subscribe({
+      next: (data) => {
+        const idx = this.evaluations.findIndex(e => e.id === this.selectedEval!.id);
+        if (idx !== -1) this.evaluations[idx] = data;
+        this.closeUpdateModal();
+      },
+      error: (error) => {
+        console.error('Error updating evaluation:', error);
+      }
+    });
   }
 
   openDeleteModal(evalObj: any) {

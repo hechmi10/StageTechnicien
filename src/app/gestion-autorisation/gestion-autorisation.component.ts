@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Autorisation } from '../models/autorisation';
 import { Employee } from '../models/employee';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { GestionAutorisationService } from '../services/autorisation/gestion-autorisation.service';
 import { EmployeeService } from '../services/employee/employee.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-gestion-autorisation',
@@ -11,143 +11,154 @@ import { EmployeeService } from '../services/employee/employee.service';
   styleUrls: ['./gestion-autorisation.component.css']
 })
 export class GestionAutorisationComponent implements OnInit {
-  
-  constructor(private _autorisation_service: GestionAutorisationService, private _employee_service: EmployeeService) { }
   autorisations: Autorisation[] = [];
   employees: Employee[] = [];
-  loading: boolean = true;
 
   showCreateModal = false;
-  showEditModal = false;
+  showUpdateModal = false;
   showDeleteModal = false;
 
-  newAutorisation: Autorisation = { dateAutorisation: undefined, duration: '', employee: undefined };
-  selectedAutorisation: Autorisation | null = null;
-  autorisationToDelete: Autorisation | null = null;
-  
-  ngOnInit(): void {
-    this.loadAutorisations();
+  newAutorisation: any = { employee: null, dateAutorisation: '', duration: '' };
+  selectedAutorisation: any = null;
+
+  createAutorisationForm: FormGroup = new FormGroup({
+    employee: new FormControl(null, Validators.required),
+    dateAutorisation: new FormControl('', Validators.required),
+    duration: new FormControl('', Validators.required)
+  });
+
+  constructor(
+    private _autorisation_service: GestionAutorisationService,
+    private _employee_service: EmployeeService
+  ) {}
+
+  ngOnInit() {
     this.loadEmployees();
+    this.loadAutorisations();
   }
 
-  private loadAutorisations(): void {
-    this.loading = true;
+  // Data loading
+  loadAutorisations() {
     this._autorisation_service.getAutorisation().subscribe({
-      next: (data: Autorisation[]) => {
+      next: (data) => {
         this.autorisations = data;
-        console.log('Autorisations loaded:', this.autorisations); // Debug log
-        this.loading = false;
       },
       error: (error) => {
         console.error('Error loading autorisations:', error);
-        this.loading = false;
       }
     });
   }
 
-  private loadEmployees(): void {
+  loadEmployees() {
     this._employee_service.getEmployees().subscribe({
-      next: (data: Employee[]) => {
+      next: (data) => {
         this.employees = data;
-        console.log('Employees loaded:', this.employees); // Debug log
-        this.loading = false;
       },
       error: (error) => {
         console.error('Error loading employees:', error);
-        this.loading = false;
       }
     });
   }
 
-  form = new FormGroup({
-    employee: new FormControl<string | null>(null, [Validators.required]),
-    dateAutorisation: new FormControl('', [Validators.required]),
-    duration: new FormControl('', [Validators.required])
-  });
-
+  // Create
   openCreateModal() {
-    this.newAutorisation = { dateAutorisation: undefined, duration: '', employee: undefined };
-    this.selectedAutorisation = null;
-    this.showCreateModal = true;
-  }
+  this.createAutorisationForm.reset();
+  this.showCreateModal = true;
+}
 
   closeCreateModal() {
     this.showCreateModal = false;
   }
 
   createAutorisation() {
-    if (this.form.invalid) {
-      console.error('Form is invalid');
-      return;
+  const formValue = this.createAutorisationForm.value;
+  const autorisationToSend = {
+    ...formValue,
+    employee: formValue.employee.id // send only the ID if needed
+  };
+  this._autorisation_service.createAutorisation(autorisationToSend).subscribe({
+    next: (data) => {
+      this.autorisations.push(data);
+      this.closeCreateModal();
+    },
+    error: (error) => {
+      console.error('Error creating autorisation:', error);
     }
-    const formValue = this.form.value;
-    const employeeId = formValue.employee;
-    const employeeObj = this.employees.find(e => e.id === employeeId);
-    if (!employeeObj) {
-      console.error('Employee not found for ID:', employeeId);
-      return;
-    }
-    const autorisation: Autorisation = {
-      dateAutorisation: new Date(formValue.dateAutorisation!),
-      duration: formValue.duration!,
-      employee: employeeObj
-    };
-    this._autorisation_service.createAutorisation(autorisation).subscribe({
-      next: (data) => {
-        this.autorisations.push(data);
-        this.form.reset({ employee: null, dateAutorisation: '', duration: '' });
-      },
-      error: (error) => {
-        console.error('Error creating autorisation:', error);
-      }
-    });
-    this.closeCreateModal();
+  });
+}
+
+  // Update
+  openUpdateModal(autorisation: any) {
+    const employeeObj = this.employees.find(
+      e =>
+        e.email === autorisation.employee?.email ||
+        e.id === autorisation.employee?.id
+    );
+    this.selectedAutorisation = { ...autorisation, employee: employeeObj || autorisation.employee };
+    this.showUpdateModal = true;
   }
 
-  openEditModal(autorisation: Autorisation) {
-    this.selectedAutorisation = { ...autorisation };
-    this.showEditModal = true;
-  }
-
-  closeEditModal() {
-    this.showEditModal = false;
+  closeUpdateModal() {
+    this.showUpdateModal = false;
+    this.selectedAutorisation = null;
   }
 
   updateAutorisation() {
-    if (!this.selectedAutorisation) return;
-    const idx = this.autorisations.findIndex(a => a.id === this.selectedAutorisation?.id);
-    if (idx > -1) {
-      this._autorisation_service.updateAutorisation(idx, this.selectedAutorisation).subscribe({
+    const employeeObj = this.employees.find(
+      e =>
+        e.email === this.selectedAutorisation.employee?.email ||
+        e.id === this.selectedAutorisation.employee?.id ||
+        e.email === this.selectedAutorisation.employee ||
+        e.id === this.selectedAutorisation.employee
+    );
+    const autorisationToSend = {
+      ...this.selectedAutorisation,
+      employee: employeeObj || this.selectedAutorisation.employee
+    };
+    const index = this.autorisations.findIndex(a => a.id === this.selectedAutorisation?.id);
+    if (index !== -1) {
+      this._autorisation_service.updateAutorisation(this.selectedAutorisation.id, autorisationToSend).subscribe({
         next: (data) => {
-          this.autorisations[idx] = data;
+          this.autorisations[index] = { ...data };
+          this.closeUpdateModal();
         },
         error: (error) => {
           console.error('Error updating autorisation:', error);
         }
       });
     }
-    this.closeEditModal();
   }
 
-  openDeleteModal(autorisation: Autorisation) {
-    this.autorisationToDelete = autorisation;
+  // Delete
+  openDeleteModal(autorisation: any) {
+    this.selectedAutorisation = autorisation;
     this.showDeleteModal = true;
   }
 
   closeDeleteModal() {
     this.showDeleteModal = false;
+    this.selectedAutorisation = null;
   }
 
   deleteAutorisation() {
-    if (!this.autorisationToDelete || this.autorisationToDelete.id === undefined) return;
-    this._autorisation_service.deleteAutorisation(this.autorisationToDelete.id).subscribe({
+    this._autorisation_service.deleteAutorisation(this.selectedAutorisation.id).subscribe({
       next: () => {
-        this.autorisations = this.autorisations.filter(a => a.id !== this.autorisationToDelete!.id);
+        this.autorisations = this.autorisations.filter(a => a !== this.selectedAutorisation);
+        this.closeDeleteModal();
       },
       error: (error) => {
         console.error('Error deleting autorisation:', error);
       }
     });
-    this.closeDeleteModal();
+  }
+
+  // Utility
+  dateDiff(dateDebut: string | Date | null | undefined, dateFin: string | Date | null | undefined): number {
+    if (!dateDebut || !dateFin) return 0;
+    const debut = new Date(dateDebut);
+    const fin = new Date(dateFin);
+    const diffTime = fin.getTime() - debut.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays > 0 ? diffDays : 0;
   }
 }

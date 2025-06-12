@@ -1,8 +1,7 @@
 <div class="container mt-4">
     <h2>Gestion des Autorisations</h2>
     <button class="btn btn-primary mb-2" (click)="openCreateModal()">Create Autorisation</button>
-    <div *ngIf="loading">Loading...</div>
-    <table class="table table-bordered" *ngIf="!loading && autorisations?.length">
+    <table class="table table-bordered" *ngIf=" autorisations?.length">
         <thead>
             <tr>
                 <th>Employee</th>
@@ -14,16 +13,18 @@
         <tbody>
             <tr *ngFor="let autorisation of autorisations">
                 <td>{{ autorisation?.employee?.email }}</td>
-                <td>{{ autorisation?.dateAutorisation | date:'yyyy-MM-dd' }}</td> <!-- Corrected property -->
+                <td>
+                    {{ autorisation?.dateAutorisation ? (autorisation?.dateAutorisation | date:'yyyy-MM-dd') : '' }}
+                </td>
                 <td>{{ autorisation?.duration }}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm" (click)="openEditModal(autorisation)">Edit</button>
+                    <button class="btn btn-primary btn-sm" (click)="openUpdateModal(autorisation)">Edit</button>
                     <button class="btn btn-danger btn-sm" (click)="openDeleteModal(autorisation)">Delete</button>
                 </td>
             </tr>
         </tbody>
     </table>
-    <div *ngIf="!loading && !autorisations?.length" class="alert alert-info">
+    <div *ngIf=" !autorisations?.length" class="alert alert-info">
         No autorisations available.
     </div>
 
@@ -31,10 +32,47 @@
     <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form [formGroup]="form" (ngSubmit)="createAutorisation()">
+                <form [formGroup]="createAutorisationForm" (ngSubmit)="createAutorisation()">
                     <div class="modal-header">
                         <h5 class="modal-title">Create Autorisation</h5>
                         <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="employee">Employee</label>
+                            <select id="employee" class="form-control" formControlName="employee" required>
+                                <option [ngValue]="null" disabled>Select an employee</option>
+                                <option *ngFor="let emp of employees" [ngValue]="emp.id">{{ emp.email }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dateAutorisation">Date Autorisation</label>
+                            <input id="dateAutorisation" type="date" class="form-control"
+                                formControlName="dateAutorisation" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="duration">Duration</label>
+                            <input id="duration" type="text" class="form-control" formControlName="duration" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"
+                            [disabled]="createAutorisationForm.invalid">Create</button>
+                        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form [formGroup]="createAutorisationForm" (ngSubmit)="updateAutorisation()">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Autorisation</h5>
+                        <button type="button" class="btn-close" (click)="closeUpdateModal()"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
@@ -54,46 +92,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success" [disabled]="form.invalid">Create</button>
-                        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showEditModal}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form (ngSubmit)="updateAutorisation()">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Autorisation</h5>
-                        <button type="button" class="btn-close" (click)="closeEditModal()"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label>Date Autorisation</label>
-                            <input type="date" class="form-control" [(ngModel)]="selectedAutorisation!.dateAutorisation"
-                                name="editDateAutorisation" required>
-                        </div>
-                        <div class="mb-3">
-                            <label>Duration</label>
-                            <input type="text" class="form-control" [(ngModel)]="selectedAutorisation!.duration"
-                                name="editDuration" required>
-                        </div>
-                        <div class="mb-3">
-                            <label>Employee</label>
-                            <select class="form-control" [(ngModel)]="selectedAutorisation!.employee!.id" name="editEmployee"
-                                required>
-                                <option [ngValue]="null" disabled>Select an employee</option>
-                                <option *ngFor="let emp of employees" [ngValue]="emp.id">{{ emp.email }}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
-                        <button type="button" class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+                        <button type="button" class="btn btn-secondary" (click)="closeUpdateModal()">Cancel</button>
                     </div>
                 </form>
             </div>
