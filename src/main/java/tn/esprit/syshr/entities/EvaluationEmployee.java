@@ -21,7 +21,7 @@ public class EvaluationEmployee {
     private Date dateEvaluation;
 
     @JoinColumn(name="employee_id")
-    @OneToOne
+    @ManyToOne
     private Employee employee;
 
 }

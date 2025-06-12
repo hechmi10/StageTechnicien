@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("evaluation")
+@RequestMapping("/evaluation")
 public class EvaluationRestController {
 
     @Autowired
