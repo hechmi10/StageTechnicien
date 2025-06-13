@@ -180,4 +180,13 @@ export class GestionRetardComponent implements OnInit {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     return diffDays > 0 ? diffDays : 0;
   }
+  retardToHeures(minutesRetard: number): number {
+    if (minutesRetard > 120) return 8; // Absent = journée entière (exemple: 8h)
+    if (minutesRetard > 60) return 3;
+    if (minutesRetard > 30) return 2;
+    if (minutesRetard > 15) return 1;
+    return 0;
+  }
+  minutesRetard = ((this.createRetardForm.value.nbJours ?? 0) * 3600) / 60; // récupéré du formulaire
+  heuresRetard = this.retardToHeures(this.minutesRetard ?? 0);
 }

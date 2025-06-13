@@ -11,4 +11,11 @@
             </button>
         </div>
     </div>
+    <div class="mt-4 text-center">
+        <p class="text-muted">Nombre de retards : {{ countNumberOfRetards() }}</p>
+        <p class="text-muted">Nombre d'autorisations : {{ countNumberOfAutorisations() }}</p>
+        <p class="text-muted">Nombre de Congés : {{ countNumberOfConges() }}</p>
+        <p class="text-muted">Nombre d'absences : {{ countNumberOfAbsences() }}</p>
+        <p class="text-muted">Sanctions : {{ calculSanction(countNumberOfRetards(), countNumberOfAutorisations(), countNumberOfAbsences()) }}</p>
+    </div>
 </div>

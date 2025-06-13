@@ -19,15 +19,15 @@ export class GestionCongeComponent implements OnInit {
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newConge: any = { employe: '', dateDebut: '', dateFin: '',nbJours:0, raison: '' };
+  newConge: any = { employe: '', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
   selectedConge: any = null;
 
   updateCongeForm: FormGroup = new FormGroup({
-    employe:new FormControl ('', Validators.required),
-      dateDebut: new FormControl ('', Validators.required),
-      dateFin: new FormControl ('', Validators.required),
-      nbJours: new FormControl (0, Validators.required),
-      raison: new FormControl ('', Validators.required)
+    employe: new FormControl('', Validators.required),
+    dateDebut: new FormControl('', Validators.required),
+    dateFin: new FormControl('', Validators.required),
+    nbJours: new FormControl(0, Validators.required),
+    raison: new FormControl('', Validators.required)
   });
 
 
@@ -69,39 +69,39 @@ export class GestionCongeComponent implements OnInit {
   }
 
   createConge() {
-  // Find the employee object by email
-  const selectedEmployee = this.employees.find(emp => emp.email === this.newConge.employe);
-  if (!selectedEmployee) {
-    alert('Veuillez sélectionner un employé valide.');
-    return;
-  }
-
-  // Convert date strings to Date objects
-  const dateDebut = this.newConge.dateDebut ? new Date(this.newConge.dateDebut) : undefined;
-  const dateFin = this.newConge.dateFin ? new Date(this.newConge.dateFin) : undefined;
-
-  // Calculate number of days
-  const nbJours = (dateDebut && dateFin) ? this.dateDiff(dateDebut, dateFin) : 0;
-
-  // Prepare the object to send
-  const congeToSend = {
-    ...this.newConge,
-    employe: selectedEmployee,
-    dateDebut,
-    dateFin,
-    nbJours
-  };
-
-  this._conge_service.createConge(congeToSend).subscribe({
-    next: (data) => {
-      this.conges.push(data);
-      this.closeCreateModal();
-    },
-    error: (error) => {
-      console.error('Error creating conge:', error);
+    // Find the employee object by email
+    const selectedEmployee = this.employees.find(emp => emp.email === this.newConge.employe);
+    if (!selectedEmployee) {
+      alert('Veuillez sélectionner un employé valide.');
+      return;
     }
-  });
-}
+
+    // Convert date strings to Date objects
+    const dateDebut = this.newConge.dateDebut ? new Date(this.newConge.dateDebut) : undefined;
+    const dateFin = this.newConge.dateFin ? new Date(this.newConge.dateFin) : undefined;
+
+    // Calculate number of days
+    const nbJours = (dateDebut && dateFin) ? this.dateDiff(dateDebut, dateFin) : 0;
+
+    // Prepare the object to send
+    const congeToSend = {
+      ...this.newConge,
+      employe: selectedEmployee,
+      dateDebut,
+      dateFin,
+      nbJours
+    };
+
+    this._conge_service.createConge(congeToSend).subscribe({
+      next: (data) => {
+        this.conges.push(data);
+        this.closeCreateModal();
+      },
+      error: (error) => {
+        console.error('Error creating conge:', error);
+      }
+    });
+  }
 
   openUpdateModal(conge: any) {
     this.selectedConge = { ...conge };
@@ -121,7 +121,7 @@ export class GestionCongeComponent implements OnInit {
       c.raison === this.selectedConge.raison
     );
     if (index !== -1) {
-      this._conge_service.updateConge(index,this.selectedConge).subscribe({
+      this._conge_service.updateConge(index, this.selectedConge).subscribe({
         next: (data) => {
           this.conges[index] = { ...data };
         },
@@ -162,5 +162,15 @@ export class GestionCongeComponent implements OnInit {
     const diffTime = fin.getTime() - debut.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     return diffDays > 0 ? diffDays : 0;
+  }
+  soldeConge(moisTravailles: number): number {
+    return moisTravailles * 1.75;
+  }
+  resteSoldeConge(
+    soldeConge: number,
+    ancienSolde: number,
+    sanctions: number
+  ): number {
+    return soldeConge + ancienSolde - sanctions;
   }
 }

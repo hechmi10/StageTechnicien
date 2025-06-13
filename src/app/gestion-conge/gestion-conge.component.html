@@ -11,6 +11,7 @@
                 <th>Date Fin</th>
                 <th>Nombre de jours</th>
                 <th>Raison</th>
+                <th>Solde Congé</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -22,6 +23,8 @@
                 <td>{{ conge?.dateFin | date }}</td>
                 <td>{{ conge?.nbJours }}</td>
                 <td>{{ conge?.raison }}</td>
+                <td>{{ soldeConge(conge?.nbJours ?? 0) }}</td>
+
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="openUpdateModal(conge)">Modifier</button>
                     <button class="btn btn-sm btn-danger" (click)="openDeleteModal(conge)">Supprimer</button>
