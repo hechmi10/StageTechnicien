@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: syshr-frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    command: ["sh", "-c", "npm run ng -- serve --host 0.0.0.0 --project SysHR"]
+
+  backend:
+    image: syshr-backend
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+    command: ["java", "--enable-preview", "-jar", "/app/SysHR.jar"]
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/syshrdb?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"  # Changed host port to 3307
+    networks:
+      - app-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=syshrdb
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
+    driver: bridge
