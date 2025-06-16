@@ -18,6 +18,9 @@ class Login extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text('Login',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) {
