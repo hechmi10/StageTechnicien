@@ -14,35 +14,94 @@ class _PointageState extends State<Pointage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-      title: const Text("Pointage"),
-      backgroundColor: Colors.blue,
+        title: const Text(
+          "Pointage",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
+        backgroundColor: Colors.blue[800],
+        elevation: 0,
+        centerTitle: true,
       ),
       body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-        const Text("Pointage"),
-        Text("Nombre de pointages restants: $pointagesRestants"),
-        ElevatedButton(
-          onPressed: () {
-          setState(() {
-            if(pointagesRestants!=0){
-              pointagesRestants--;
-            }else{
-              pointagesRestants = 0;
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Vous n'avez plus de pointages restants")),
-              );
-            }
-            
-          });
-          },
-          child: const Text("Valider"),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+          margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.08),
+                blurRadius: 16,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.access_time, size: 56, color: Colors.blue),
+              const SizedBox(height: 16),
+              const Text(
+                "Pointage",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.1,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Nombre de pointages restants: $pointagesRestants",
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[800],
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (pointagesRestants != 0) {
+                        pointagesRestants--;
+                      } else {
+                        pointagesRestants = 0;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Vous n'avez plus de pointages restants"),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
+                    });
+                  },
+                  child: const Text("Valider"),
+                ),
+              ),
+            ],
+          ),
         ),
-        ],
-      ),
       ),
     );
-    }
+  }
 }
