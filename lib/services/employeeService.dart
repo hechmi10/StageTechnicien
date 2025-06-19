@@ -1,16 +1,27 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:syshr/models/authResponse.dart';
 import 'package:syshr/models/employee.dart';
 
 class EmployeeService {
-  Future<Employee> signIn() async {
+  Future<AuthResponse> signIn() async {
     const String url = "http://localhost:8080/api/auth/authenticate";
     try {
-      final response = await http.post(Uri.parse(url));
+      Employee employee = await EmployeeService().getEmployeeById(2); // Example employee ID
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode({
+          "email": employee.email,
+          "password": employee.password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
-        return Employee.fromJson(jsonResponse);
+        return AuthResponse.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to load employee');
       }

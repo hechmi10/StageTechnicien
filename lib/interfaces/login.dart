@@ -95,7 +95,7 @@ class Login extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Logging in...')),
                             );
-                            //await EmployeeService().signIn();
+                            await EmployeeService().signIn();
                             Navigator.pushReplacementNamed(context, Pointage.pointageUrl);
                           }
                         },
