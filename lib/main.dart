@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:syshr/interfaces/demandeAutorisation.dart';
+import 'package:syshr/interfaces/demandeConge.dart';
 import 'package:syshr/interfaces/login.dart';
 import 'package:syshr/interfaces/pointage.dart';
 
@@ -34,8 +36,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         Login.loginUrl: (context) => Login(),
-        Pointage.pointageUrl: (context) => const Pointage(),
-
+        Pointage.pointageUrl: (context) => Pointage(),
+        Demandeconge.demandeCongeUrl: (context) => Demandeconge(),
+        Demandeautorisation.demandeAutorisationUrl: (context) => Demandeautorisation(),
       },
       //home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );

@@ -2,13 +2,13 @@
 import 'package:syshr/models/role.dart';
 
 class Employee {
-  final String id;
+  final String? id;
   final String email;
   final String password;
   final Role role;
 
   Employee({
-    required this.id,
+    this.id,
     required this.email,
     required this.password,
     required this.role,

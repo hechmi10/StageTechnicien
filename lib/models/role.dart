@@ -1,27 +1,23 @@
 enum Role {
-  admin,
-  user, defaultRole,
+  ADMIN,
+  EMPLOYEE,
 }
 extension RoleExtension on Role {
   String name() {
     switch (this) {
-      case Role.defaultRole:
-        return 'Default';
-      case Role.admin:
+      case Role.ADMIN:
         return 'Admin';
-      case Role.user:
-        return 'User';
+      case Role.EMPLOYEE:
+        return 'Employee';
     }
   }
 
   String description() {
     switch (this) {
-      case Role.defaultRole:
-        return 'Default role with limited permissions.';
-      case Role.admin:
-        return 'Has full access to the system.';
-      case Role.user:
-        return 'Has limited access to the system.';
+      case Role.ADMIN:
+        return 'Admin role with full permissions.';
+      case Role.EMPLOYEE:
+        return 'Employee role with limited permissions.';
     }
   }
 }
@@ -30,9 +26,9 @@ extension RoleFromString on String {
   Role toRole() {
     switch (this) {
       case 'admin':
-        return Role.admin;
-      case 'user':
-        return Role.user;
+        return Role.ADMIN;
+      case 'employee':
+        return Role.EMPLOYEE;
       default:
         throw ArgumentError('Unknown role: $this');
     }
