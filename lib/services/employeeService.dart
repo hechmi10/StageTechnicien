@@ -23,10 +23,10 @@ class EmployeeService {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         return AuthResponse.fromJson(jsonResponse);
       } else {
-        throw Exception('Failed to load employee');
+        throw Exception('Failed to authenticate');
       }
     } catch (e) {
-      print('Error fetching employee: $e');
+      print('Error authenticating: $e');
       rethrow;
     }
   }
