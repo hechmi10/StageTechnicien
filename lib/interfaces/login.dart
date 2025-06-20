@@ -24,7 +24,9 @@ class Login extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Card(
             elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(28.0),
               child: Form(
@@ -47,7 +49,9 @@ class Login extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Email',
                         prefixIcon: const Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         filled: true,
                         fillColor: Colors.white,
                       ),
@@ -65,7 +69,9 @@ class Login extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         prefixIcon: const Icon(Icons.lock_outline),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         filled: true,
                         fillColor: Colors.white,
                       ),
@@ -95,20 +101,28 @@ class Login extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Logging in...')),
                             );
-                            //await EmployeeService().signIn();
-                            Navigator.pushReplacementNamed(context, Pointage.pointageUrl);
+                            //await EmployeeService().signIn(2);
+                            Navigator.pushReplacementNamed(
+                              context,
+                              Pointage.pointageUrl,
+                            );
                           }
                         },
                         label: const Text(
                           'Login',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       'For HR staff only',
-                      style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.grey[700],
+                      ),
                     ),
                   ],
                 ),

@@ -5,10 +5,10 @@ import 'package:syshr/models/authResponse.dart';
 import 'package:syshr/models/employee.dart';
 
 class EmployeeService {
-  Future<AuthResponse> signIn() async {
+  Future<AuthResponse> signIn(int employeeId) async {
     const String url = "http://localhost:8080/api/auth/authenticate";
     try {
-      Employee employee = await EmployeeService().getEmployeeById(2); // Example employee ID
+      Employee employee = await EmployeeService().getEmployeeById(employeeId);
       final response = await http.post(
         Uri.parse(url),
         body: json.encode({
