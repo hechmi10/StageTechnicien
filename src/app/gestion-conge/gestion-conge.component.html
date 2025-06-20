@@ -1,7 +1,6 @@
 <!-- Conges Table -->
 <div class="container mt-4">
     <h2>Gestion des Congés</h2>
-    <button class="btn btn-primary mb-3" (click)="openCreateModal()">Créer un Congé</button>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -35,53 +34,6 @@
 </div>
 
 <!-- Modal Création -->
-<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form (ngSubmit)="createConge()">
-                <div class="modal-header">
-                    <h5 class="modal-title">Créer un Congé</h5>
-                    <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Employé</label>
-                        <select class="form-control" [(ngModel)]="newConge.employe" name="employe" required>
-                            <option [ngValue]="null" disabled>Sélectionner un employé</option>
-                            <option *ngFor="let emp of employees" [value]="emp.email">
-                                <div *ngIf="emp.role === 'EMPLOYEE'">
-                                    {{ emp.email }}
-                                </div>
-                            </option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label>Date Début</label>
-                        <input type="date" class="form-control" [(ngModel)]="newConge.dateDebut" name="dateDebut"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Date Fin</label>
-                        <input type="date" class="form-control" [(ngModel)]="newConge.dateFin" name="dateFin" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Nombre de jours</label>
-                        <input type="number" class="form-control" [(ngModel)]="newConge.nbJours" name="nbJours" required
-                            readonly [value]="dateDiff(newConge.dateDebut, newConge.dateFin)">
-                    </div>
-                    <div class="mb-3">
-                        <label>Raison</label>
-                        <input type="text" class="form-control" [(ngModel)]="newConge.raison" name="raison" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Créer</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Modification -->
 <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">

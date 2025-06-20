@@ -30,6 +30,12 @@
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/pointage">Pointage</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" (click)="openCreateCongeModal()">Demander un congé</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" (click)="openCreateAutorisationModal()">Demander une autorisation</a>
+                        </li>
                     </ng-container>
                     <li class="nav-item">
                         <a class="nav-link" (click)="logout()">Logout</a>
@@ -39,3 +45,91 @@
         </div>
     </nav>
 </div>
+
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateCongeModal}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form (ngSubmit)="createConge()">
+                <div class="modal-header">
+                    <h5 class="modal-title">Créer un Congé</h5>
+                    <button type="button" class="btn-close" (click)="closeCreateCongeModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Employé</label>
+                        <select class="form-control" [(ngModel)]="newConge.employe" name="employe" required>
+                            <option [ngValue]="null" disabled>Sélectionner un employé</option>
+                            <option *ngFor="let emp of employees" [value]="emp.email">
+                                <div *ngIf="emp.role === 'EMPLOYEE'">
+                                    {{ emp.email }}
+                                </div>
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Début</label>
+                        <input type="date" class="form-control" [(ngModel)]="newConge.dateDebut" name="dateDebut"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Fin</label>
+                        <input type="date" class="form-control" [(ngModel)]="newConge.dateFin" name="dateFin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Nombre de jours</label>
+                        <input type="number" class="form-control" [(ngModel)]="newConge.nbJours" name="nbJours" required
+                            readonly [value]="dateDiff(newConge.dateDebut, newConge.dateFin)">
+                    </div>
+                    <div class="mb-3">
+                        <label>Raison</label>
+                        <input type="text" class="form-control" [(ngModel)]="newConge.raison" name="raison" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeCreateCongeModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Créer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateAutorisationModal}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form [formGroup]="createAutorisationForm" (ngSubmit)="createAutorisation()">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create Autorisation</h5>
+                        <button type="button" class="btn-close" (click)="closeCreateAutorisationModal()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="employee">Employee</label>
+                            <select id="employee" class="form-control" formControlName="employee" required>
+                                <option [ngValue]="null" disabled>Select an employee</option>
+                                <option *ngFor="let emp of employees" [ngValue]="emp.email">
+                                    <div *ngIf="emp.role === 'EMPLOYEE'">
+                                        {{ emp.email }}
+                                    </div>
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dateAutorisation">Date Autorisation</label>
+                            <input id="dateAutorisation" type="date" class="form-control"
+                                formControlName="dateAutorisation" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="duration">Duration</label>
+                            <input id="duration" type="text" class="form-control" formControlName="duration" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"
+                            [disabled]="createAutorisationForm.invalid">Create</button>
+                        <button type="button" class="btn btn-secondary" (click)="closeCreateAutorisationModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

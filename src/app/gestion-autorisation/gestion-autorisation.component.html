@@ -1,6 +1,5 @@
 <div class="container mt-4">
     <h2>Gestion des Autorisations</h2>
-    <button class="btn btn-primary mb-2" (click)="openCreateModal()">Create Autorisation</button>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -26,45 +25,7 @@
     </table>
 
     <!-- Create Modal -->
-    <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showCreateModal}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form [formGroup]="createAutorisationForm" (ngSubmit)="createAutorisation()">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Create Autorisation</h5>
-                        <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="employee">Employee</label>
-                            <select id="employee" class="form-control" formControlName="employee" required>
-                                <option [ngValue]="null" disabled>Select an employee</option>
-                                <option *ngFor="let emp of employees" [ngValue]="emp.email">
-                                    <div *ngIf="emp.role === 'EMPLOYEE'">
-                                        {{ emp.email }}
-                                    </div>
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="dateAutorisation">Date Autorisation</label>
-                            <input id="dateAutorisation" type="date" class="form-control"
-                                formControlName="dateAutorisation" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="duration">Duration</label>
-                            <input id="duration" type="text" class="form-control" formControlName="duration" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success"
-                            [disabled]="createAutorisationForm.invalid">Create</button>
-                        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Edit Modal -->
     <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showUpdateModal}">

@@ -22,10 +22,10 @@ export class GestionAutorisationComponent implements OnInit {
   selectedAutorisation: any = null;
 
   createAutorisationForm: FormGroup = new FormGroup({
-    employee: new FormControl(null, Validators.required),
-    dateAutorisation: new FormControl('', Validators.required),
-    duration: new FormControl('', Validators.required)
-  });
+      employee: new FormControl(null, Validators.required),
+      dateAutorisation: new FormControl('', Validators.required),
+      duration: new FormControl('', Validators.required)
+    });
 
   constructor(
     private _autorisation_service: GestionAutorisationService,
@@ -60,40 +60,7 @@ export class GestionAutorisationComponent implements OnInit {
     });
   }
 
-  // Create
-  openCreateModal() {
-  this.createAutorisationForm.reset();
-  this.showCreateModal = true;
-}
-
-  closeCreateModal() {
-    this.showCreateModal = false;
-  }
-
-  createAutorisation() {
-  const formValue = this.createAutorisationForm.value;
-  // Find the full employee object by email
-  const employeeObj = this.employees.find(e => e.email === formValue.employee);
-  if (!employeeObj) {
-    console.error('Employee not found');
-    return;
-  }
-  // Prepare the object to send (send only the ID if backend expects it)
-  const autorisationToSend = {
-    ...formValue,
-    employee: employeeObj.id
-  };
-  this._autorisation_service.createAutorisation(autorisationToSend).subscribe({
-    next: (data) => {
-      // For display, attach the full employee object
-      this.autorisations.push({ ...data, employee: employeeObj });
-      this.closeCreateModal();
-    },
-    error: (error) => {
-      console.error('Error creating autorisation:', error);
-    }
-  });
-}
+ 
 
   // Update
   openUpdateModal(autorisation: any) {

@@ -15,11 +15,10 @@ export class GestionCongeComponent implements OnInit {
   conges: Conge[] = [
   ];
 
-  showCreateModal = false;
+  
   showUpdateModal = false;
   showDeleteModal = false;
 
-  newConge: any = { employe: '', dateDebut: '', dateFin: '', nbJours: 0, raison: '' };
   selectedConge: any = null;
 
   updateCongeForm: FormGroup = new FormGroup({
@@ -59,49 +58,7 @@ export class GestionCongeComponent implements OnInit {
     });
   }
 
-  openCreateModal() {
-    this.newConge = { employe: '', dateDebut: '', dateFin: '', raison: '' };
-    this.showCreateModal = true;
-  }
-
-  closeCreateModal() {
-    this.showCreateModal = false;
-  }
-
-  createConge() {
-    // Find the employee object by email
-    const selectedEmployee = this.employees.find(emp => emp.email === this.newConge.employe);
-    if (!selectedEmployee) {
-      alert('Veuillez sélectionner un employé valide.');
-      return;
-    }
-
-    // Convert date strings to Date objects
-    const dateDebut = this.newConge.dateDebut ? new Date(this.newConge.dateDebut) : undefined;
-    const dateFin = this.newConge.dateFin ? new Date(this.newConge.dateFin) : undefined;
-
-    // Calculate number of days
-    const nbJours = (dateDebut && dateFin) ? this.dateDiff(dateDebut, dateFin) : 0;
-
-    // Prepare the object to send
-    const congeToSend = {
-      ...this.newConge,
-      employe: selectedEmployee,
-      dateDebut,
-      dateFin,
-      nbJours
-    };
-
-    this._conge_service.createConge(congeToSend).subscribe({
-      next: (data) => {
-        this.conges.push(data);
-        this.closeCreateModal();
-      },
-      error: (error) => {
-        console.error('Error creating conge:', error);
-      }
-    });
-  }
+  
 
   openUpdateModal(conge: any) {
     this.selectedConge = { ...conge };
@@ -154,14 +111,6 @@ export class GestionCongeComponent implements OnInit {
       }
     });
     this.closeDeleteModal();
-  }
-  dateDiff(dateDebut: string | Date, dateFin: string | Date): number {
-    if (!dateDebut || !dateFin) return 0;
-    const debut = new Date(dateDebut);
-    const fin = new Date(dateFin);
-    const diffTime = fin.getTime() - debut.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return diffDays > 0 ? diffDays : 0;
   }
   soldeConge(moisTravailles: number): number {
     return moisTravailles * 1.75;
