@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { PointageComponent } from './pointage/pointage.component';
 import { RegisterComponent } from './register/register.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { ChatbotComponent } from './chatbot/chatbot.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -20,6 +21,7 @@ const routes: Routes = [
   {path: 'gestion-conge', component: GestionCongeComponent},
   {path: 'gestion-evaluation', component: GestionEvaluationComponent},
   {path: 'gestion-absence', component: GestionAbsenceComponent},
+  {path:'chatbot',component:ChatbotComponent},
   {path: '**', component: NotFoundComponent}
 ];
 

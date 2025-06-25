@@ -17,6 +17,7 @@ import { GestionEvaluationComponent } from './gestion-evaluation/gestion-evaluat
 import { GestionAbsenceComponent } from './gestion-absence/gestion-absence.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
+import { ChatbotComponent } from './chatbot/chatbot.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     GestionCongeComponent,
     GestionEvaluationComponent,
     GestionAbsenceComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ChatbotComponent
   ],
   imports: [
     BrowserModule,
