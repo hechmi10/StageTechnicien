@@ -9,9 +9,9 @@
                 <div class="card-body chat-window bg-light" id="chat-window" style="height: 350px; overflow-y: auto;">
                     <ng-container *ngIf="messages && messages.length; else noMessages">
                         <div *ngFor="let msg of messages">
-                            <div [ngClass]="{'text-end': msg.sender === 'user', 'text-start': msg.sender === 'ai'}">
-                                <span class="badge bg-secondary" *ngIf="msg.sender === 'ai'">AI:</span>
-                                <span class="badge bg-primary" *ngIf="msg.sender === 'user'">You:</span>
+                            <div [ngClass]="{'text-end': msg.sender === 'user', 'text-start': msg.sender === 'ai'}" class="mb-2">
+                                <span *ngIf="msg.sender === 'ai'" class="badge bg-secondary me-1">AI:</span>
+                                <span *ngIf="msg.sender === 'user'" class="badge bg-primary me-1">You:</span>
                                 <span>{{ msg.text }}</span>
                             </div>
                         </div>

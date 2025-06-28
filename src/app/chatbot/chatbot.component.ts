@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import {
   GoogleGenAI,
   HarmBlockThreshold,
@@ -14,19 +14,20 @@ export class ChatbotComponent {
   userInput: string = '';
   messages: { sender: string, text: string }[] = [];
 
+  constructor(private cd: ChangeDetectorRef) {}
+
   async sendMessage(): Promise<void> {
     if (!this.userInput.trim()) return;
 
     // Add user's message
     this.messages.push({ sender: 'user', text: this.userInput });
-    
 
     const ai = new GoogleGenAI({
       apiKey: 'AIzaSyDzvXyqZpDd_rKyHuHMeCTH5xVb9lFF2TM',
     });
     const config = {
       thinkingConfig: {
-        thinkingBudget: -1,
+        thinkingBudget: 0,
       },
       safetySettings: [
         {
@@ -53,27 +54,8 @@ export class ChatbotComponent {
         }
       ],
     };
-    const model = 'gemini-2.5-pro';
+    const model = 'gemini-2.5-flash';
     const contents = [
-      {
-        role: 'user',
-        parts: [
-          {
-            text: `hi`,
-          },
-        ],
-      },
-      {
-        role: 'model',
-        parts: [
-          {
-            text: `...`, // (keep your previous model message here)
-          },
-          {
-            text: `...`, // (keep your previous model message here)
-          },
-        ],
-      },
       {
         role: 'user',
         parts: [
@@ -84,7 +66,6 @@ export class ChatbotComponent {
       },
     ];
 
-    // Prepare to collect AI response
     let aiResponse = '';
     const response = await ai.models.generateContentStream({
       model,
@@ -92,21 +73,14 @@ export class ChatbotComponent {
       contents,
     });
     for await (const chunk of response) {
-      if (
-        chunk &&
-        chunk.candidates &&
-        chunk.candidates[0] &&
-        chunk.candidates[0].content &&
-        chunk.candidates[0].content.parts &&
-        chunk.candidates[0].content.parts[0] &&
-        chunk.candidates[0].content.parts[0].text
-      ) {
-        aiResponse += chunk.candidates[0].content.parts[0].text;
+      if (chunk && chunk.text) {
+        aiResponse += chunk.text;
       }
     }
 
     // Add AI's message
     this.messages.push({ sender: 'ai', text: aiResponse });
+    this.cd.detectChanges();
 
     // Clear user input
     this.userInput = '';
