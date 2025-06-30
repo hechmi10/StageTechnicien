@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "954250993847",
+    "project_id": "syshr-eb90c",
+    "storage_bucket": "syshr-eb90c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954250993847:android:d92c7a7b23c110091dad32",
+        "android_client_info": {
+          "package_name": "com.example.syshr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy4Tu3P-jQQay4DAu6eXdsRdC7pNfWnm4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
